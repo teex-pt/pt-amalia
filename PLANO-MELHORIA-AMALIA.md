@@ -36,7 +36,12 @@ Objetivo: atacar os modos de falha observados (aritmética, instruction-followin
 - **DPO on-policy:** as respostas diretas do AMALIA que chumbam nos verificadores são os «rejected»; a resposta verificada do pipeline é o «chosen». Corrige erros que o modelo realmente comete.
 - **Áreas prioritárias (Tier 1, verificáveis por código):** instruction-following com restrições duras; problemas aritméticos com restrição de brevidade; pureza pt-PT (reescritas pt-BR→pt-PT + geração condicionada); anti-confabulação (entidades fabricadas + eventos futuros). **Tier 2:** QA cultural ancorado em fontes; código (humaneval_pt); tradução en→pt-PT como proteção anti-regressão.
 - Nunca Claude/GPT: os ToS proíbem treinar modelos com os outputs — vício jurídico num dataset Apache 2.0. Com o pipeline acima, todos os tokens do dataset são de modelos Apache 2.0.
-- **Descontaminar:** garantir que o dataset não contém itens dos benchmarks.
+- **Fontes reais (complemento ao sintético):**
+  - **Exames nacionais (IAVE):** matemática com critérios de correção = respostas verificáveis por construção; provas de português = pt-PT canónico. ⚠️ O benchmark `pt_exams` do consórcio usa estes exames — extrair apenas anos/ciclos fora do benchmark e filtrar por sobreposição de n-gramas.
+  - **Conteúdo legal (dre.pt, dgsi.pt):** textos oficiais isentos de direito de autor (CDADC); registo formal pt-PT em escala. Descontaminar contra `LegalBenchPT`; anonimizar decisões judiciais (RGPD) antes de redistribuir.
+  - **BASE contratos públicos (base.gov.pt):** registo contratual/administrativo pt-PT, dados abertos.
+  - **Uso:** QA ancorado (pergunta gerada sobre passagem; verificador = correspondência extrativa com a fonte), sementes de reescrita para a categoria variedade, e problemas de exame como aritmética com verdade dos critérios de correção.
+- **Descontaminar:** garantir que o dataset não contém itens dos benchmarks (pt_exams, LegalBenchPT, alba, cultura_viva incluídos).
 
 **4. LoRA piloto no Mac**
 - `mlx_lm.lora` sobre o AMALIA-9B com o dataset filtrado.
