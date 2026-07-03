@@ -36,7 +36,7 @@ except Exception:
 
 from mlx_lm import load, stream_generate
 
-from harness.verifiers import CHECKERS
+from harness.verifiers import CHECKERS, find_br_markers
 
 TEACHER = "mlx-community/Ministral-3-14B-Reasoning-2512-4bit"
 REWRITERS = {
@@ -122,7 +122,7 @@ def main():
 
     # ---- stage 1: teacher drafts for arithmetic + format --------------------
     print(f"[stage 1] loading teacher {TEACHER}", flush=True)
-    model, tokenizer = load(TEACHER)
+    model, tokenizer = load(TEACHER, tokenizer_config={"fix_mistral_regex": True})
     for it in items:
         if it["category"] not in ("arithmetic", "format"):
             continue
@@ -141,6 +141,15 @@ def main():
     for it in items:
         rec = records[it["id"]]
         if it["category"] in ("arithmetic", "format"):
+            # verify-early: a draft that already passes (and is pt-BR-clean)
+            # needs no rewrite — rewriting a correct answer can only break it
+            ok, _ = CHECKERS[it["category"]](it, rec["draft"])
+            if ok and not find_br_markers(rec["draft"]):
+                rec["final"] = rec["draft"]
+                rec["provenance"]["rewriter"] = None
+                rec["provenance"]["draft_passed"] = True
+                print(f"  {it['id']}: draft passed, rewrite skipped", flush=True)
+                continue
             rewrite_prompt = (
                 "Reescreve a resposta seguinte em português europeu correto, mantendo "
                 "exatamente os números, a estrutura e o formato. Responde apenas com a "

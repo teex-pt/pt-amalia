@@ -1,4 +1,10 @@
-"""Code verifiers for the pt-PT harness. Each returns (passed: bool, reason: str)."""
+"""Code verifiers for the pt-PT harness. Each returns (passed: bool, reason: str).
+
+VERIFIER_VERSION 2: parse_time takes the LAST time in the text (answers come
+last; first-match misread pipeline texts that echo the question).
+"""
+
+VERIFIER_VERSION = 2
 
 import json
 import re
@@ -11,10 +17,11 @@ FENCE_RE = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
 
 
 def parse_time(text):
-    m = TIME_RE.search(text)
-    if not m:
+    matches = TIME_RE.findall(text)
+    if not matches:
         return None
-    return int(m.group(1)) % 24, int(m.group(2))
+    h, m = matches[-1]
+    return int(h) % 24, int(m)
 
 
 def parse_numbers(text):

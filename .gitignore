@@ -19,3 +19,4 @@ ppl-pt*.txt
 .DS_Store
 .cache/
 amalia-lm-eval/
+eurollm-22b-mlx-4bit/

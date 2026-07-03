@@ -113,6 +113,8 @@ class TestHonesty:
 class TestHelpers:
     def test_parse_time_formats(self):
         assert parse_time("12h05") == (12, 5)
+        # answers come last: question echo must not win (verifier v2)
+        assert parse_time("Parte às 9h10 e chega às 10h45.") == (10, 45)
         assert parse_time("às 9: 30 da manhã") == (9, 30)
         assert parse_time("meio-dia") is None
 
