@@ -1,0 +1,23 @@
+{
+  "label": "baseline-calame",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "limit": 50,
+  "results": {
+    "calame_pt_handwritten": {
+      "name": "calame_pt_handwritten",
+      "alias": "calame_pt_handwritten",
+      "sample_len": 50,
+      "exact_match,get-answer": 0.2,
+      "exact_match_stderr,get-answer": 0.057142857142857155
+    }
+  },
+  "versions": {
+    "calame_pt_handwritten": 1.0
+  },
+  "n-samples": {
+    "calame_pt_handwritten": {
+      "original": 406,
+      "effective": 50
+    }
+  }
+}
