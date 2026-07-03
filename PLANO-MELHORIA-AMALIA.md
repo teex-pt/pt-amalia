@@ -2,6 +2,8 @@
 
 Objetivo: atacar os modos de falha observados (aritmética, instruction-following, autoverificação falsa, deslizes pt-BR) via dados de SFT/DPO verificáveis, medindo progresso sem regressão. Iterar barato no Mac; gastar GPU só quando o dataset provar valor.
 
+**Estado (2026-07-03):** Fase 0 em curso — harness pt-PT implementado (`harness/`, 120 prompts, verificadores em código, 21 testes); `amalia-lm-eval` do consórcio a correr no Mac via MLX (`eval/`); baseline do modelo original em execução. Pipeline de dados desenhado (ver ponto 3).
+
 ---
 
 ## Fase 0 — MacBook M5 Pro 48GB (custo €0, começa já)
@@ -9,7 +11,7 @@ Objetivo: atacar os modos de falha observados (aritmética, instruction-followin
 **1. Correr o modelo real**
 - AMALIA-9B em BF16 (~18GB, cabe nos 48GB): `mlx_lm.chat --model amalia-llm/AMALIA-9B-0626-DPO`
 
-**2. Montar a avaliação (a peça mais valiosa)**
+**2. Montar a avaliação (a peça mais valiosa)** ✅ implementado em `harness/` e `eval/`
 - **Harness pt-PT próprio (mede progresso):** prompts com restrições verificáveis por código — tempos que somam N, cotações que somam 100, tratamento por "tu", contagem de itens — + detetores de pt-BR (você, celular, gerúndios) e verificação aritmética.
 - **Bateria internacional (mede não-regressão):**
   - IFEval — instruções verificáveis (o gémeo internacional do harness)
@@ -20,10 +22,20 @@ Objetivo: atacar os modos de falha observados (aritmética, instruction-followin
 - Usar o **amalia-lm-eval** (fork de avaliação do consórcio) para números comparáveis com o technical report.
 - **Baseline:** correr tudo no modelo original antes de qualquer treino.
 
-**3. Dataset piloto (alguns milhares de exemplos)**
-- Teacher self-hosted no Mac, quantizado 4-bit: EuroLLM-22B-Instruct (coerência soberanista) ou Mistral Small.
-- Nunca Claude/GPT: os ToS proíbem treinar modelos com os outputs — vício jurídico num dataset Apache 2.0.
-- Pipeline: gerar prompts com restrições verificáveis → amostrar N respostas do teacher → filtrar com os verificadores do harness → aprovados = SFT; rejeitados = negativos para DPO.
+**3. Dataset piloto (alguns milhares de exemplos) — pipeline em dois andares**
+- **Andar 1 (conteúdo):** teacher forte gera a substância (solução, JSON, resposta); traços de raciocínio `[THINK]` são removidos. Não importa se sai em pt-BR ou inglês — é rascunho.
+- **Andar 2 (superfície):** EuroLLM-22B ou o próprio AMALIA reescreve em pt-PT com instrução restrita («mantém exatamente os números, a estrutura e o formato»). Rota alternativa: teacher responde em inglês e o EuroLLM traduz (tradução é a especialidade da base EuroLLM).
+- **Verificadores correm sobre o texto FINAL, não sobre o rascunho** — resposta confere com a verdade construída, restrições mantidas, zero marcadores pt-BR. Reescrita má custa rendimento, nunca qualidade.
+- **Routing de teachers por categoria** (Apache 2.0 todos; decidir por yield medido nos verificadores, não por fé):
+  | Categoria | Teacher | Nota |
+  |---|---|---|
+  | Aritmética + brevidade | Ministral-3-14B-Reasoning-2512 | reasoning-tuned; ~8GB em 4-bit; resposta conhecida por construção — o teacher só fraseia |
+  | Formato / instruction-following | Ministral-3-14B (1.ª tentativa); Mistral Small 3.2 como fallback | medir yield e decidir |
+  | Variedade pt-PT / prosa | EuroLLM-22B-Instruct ou AMALIA | fidelidade pt-PT é o critério; Mistral fica fora |
+  | Honestidade / anti-confabulação | qualquer | pares em grande parte construídos por template |
+- **DPO on-policy:** as respostas diretas do AMALIA que chumbam nos verificadores são os «rejected»; a resposta verificada do pipeline é o «chosen». Corrige erros que o modelo realmente comete.
+- **Áreas prioritárias (Tier 1, verificáveis por código):** instruction-following com restrições duras; problemas aritméticos com restrição de brevidade; pureza pt-PT (reescritas pt-BR→pt-PT + geração condicionada); anti-confabulação (entidades fabricadas + eventos futuros). **Tier 2:** QA cultural ancorado em fontes; código (humaneval_pt); tradução en→pt-PT como proteção anti-regressão.
+- Nunca Claude/GPT: os ToS proíbem treinar modelos com os outputs — vício jurídico num dataset Apache 2.0. Com o pipeline acima, todos os tokens do dataset são de modelos Apache 2.0.
 - **Descontaminar:** garantir que o dataset não contém itens dos benchmarks.
 
 **4. LoRA piloto no Mac**
