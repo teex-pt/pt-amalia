@@ -1,6 +1,8 @@
 #!/bin/zsh
+# Convert AMALIA-9B HF safetensors to GGUF (Q4_K_M + Q8_0) and validate.
+# Can be run from anywhere; operates on the repository root.
 set -e
-cd /Users/filipemartins/Development/teex/pt-amalia
+cd "$(dirname "$0")/.."
 
 echo "=== [1/6] installing llama.cpp (brew) ==="
 brew list llama.cpp >/dev/null 2>&1 || brew install llama.cpp

@@ -1,0 +1,8 @@
+# Core: quantization, benchmarking and harness runs on Apple Silicon
+mlx-lm>=0.31
+
+# Evaluation: AMALIA-Bench tasks via lm-evaluation-harness (see eval/)
+lm-eval>=0.4.12
+
+# Development
+pytest>=8
