@@ -1,0 +1,79 @@
+{
+  "label": "q8",
+  "model": "./amalia-mlx-8bit",
+  "machine": "arm64",
+  "mlx_version": "0.31.2",
+  "load_time_s": 1.1,
+  "warmup_s": 0.5,
+  "prompts": {
+    "cultura": {
+      "output": "Luís de Camões foi um dos maiores poetas da língua portuguesa, autor de *Os Lusíadas*, obra-prima da literatura renascentista. A sua epopeia celebra os feitos dos portugueses durante a época dos Descobrimentos, exaltando a coragem, a ambição e o destino de Portugal. *Os Lusíadas* é fundamental na identidade cultural portuguesa, sendo considerada a obra literária mais importante do cânone nacional.",
+      "prompt_tokens": 91,
+      "prompt_tps": 475.5,
+      "gen_tokens": 94,
+      "gen_tps": 30.0,
+      "peak_mem_gb": 9.9,
+      "wall_s": 3.4
+    },
+    "gramatica-pt-pt": {
+      "output": "Vou enviar o e-mail para o senhor amanhã de manhã.",
+      "prompt_tokens": 100,
+      "prompt_tps": 518.4,
+      "gen_tokens": 17,
+      "gen_tps": 32.3,
+      "peak_mem_gb": 9.91,
+      "wall_s": 0.8
+    },
+    "resumo": {
+      "output": "A rede de metro de Lisboa, inaugurada em 1959 e composta atualmente por quatro linhas, tem vindo a expandir-se com projetos como a linha circular e o prolongamento até Alcântara, visando diminuir o tráfego automóvel e as emissões na cidade.",
+      "prompt_tokens": 169,
+      "prompt_tps": 671.3,
+      "gen_tokens": 59,
+      "gen_tps": 30.8,
+      "peak_mem_gb": 9.99,
+      "wall_s": 2.2
+    },
+    "raciocinio": {
+      "output": "Para descobrir a que horas o comboio chega ao Porto, precisamos de calcular o tempo total de viagem e adicioná-lo à hora de partida. Vamos fazer isto passo a passo:\n\n### Passo 1: Converter o tempo de viagem para minutos\nO comboio demora **2 horas e 50 minutos** a chegar ao Porto.\n\nVamos converter as 2 horas em minutos:\n- 2 horas × 60 minutos/hora = **120 minutos**\n\nAgora somamos os 50 minutos adicionais:\n- 120 minutos (das 2 horas) + 50 minutos = **170 minutos**\n\nPortanto, o tempo total de viagem é de **170 minutos**.\n\n### Passo 2: Adicionar o tempo de viagem à hora de partida\nO comboio parte de **Lisboa às 9h15**.\n\nVamos converter as 9h15 em minutos também:\n- 9 horas = 540 minutos\n- 15 minutos = 15 minutos\n- Total: 540 + 1",
+      "prompt_tokens": 109,
+      "prompt_tps": 561.3,
+      "gen_tokens": 250,
+      "gen_tps": 30.3,
+      "peak_mem_gb": 9.99,
+      "wall_s": 8.5
+    },
+    "traducao": {
+      "output": "A reunião foi reagendada para a próxima quarta-feira às 15h00. Por favor, informe-me se isso lhe convém.",
+      "prompt_tokens": 107,
+      "prompt_tps": 539.2,
+      "gen_tokens": 32,
+      "gen_tps": 31.5,
+      "peak_mem_gb": 9.99,
+      "wall_s": 1.3
+    },
+    "json": {
+      "output": "{\n  \"pratos\": [\n    {\n      \"nome\": \"Bacalhau à Brás\",\n      \"regiao\": \"Nacional\"\n    },\n    {\n      \"nome\": \"Carne de Porco à Alentejana\",\n      \"regiao\": \"Alentejo\"\n    },\n    {\n      \"nome\": \"Arroz de Marisco\",\n      \"regiao\": \"Lisboa e Vale do Tejo\"\n    },\n    {\n      \"nome\": \"Caldo Verde\",\n      \"regiao\": \"Minho\"\n    },\n    {\n      \"nome\": \"Sardinhas Assadas\",\n      \"regiao\": \"Nacional (comum no Algarve e Festas Populares)\"\n    }\n  ]\n}",
+      "prompt_tokens": 99,
+      "prompt_tps": 516.4,
+      "gen_tokens": 176,
+      "gen_tps": 30.7,
+      "peak_mem_gb": 9.99,
+      "wall_s": 6.0
+    }
+  },
+  "long_context": {
+    "output": "azulejo",
+    "prompt_tokens": 1952,
+    "prompt_tps": 1190.5,
+    "gen_tokens": 4,
+    "gen_tps": 39.1,
+    "peak_mem_gb": 10.74,
+    "wall_s": 1.8,
+    "needle_found": true
+  },
+  "perplexity": {
+    "tokens": 230,
+    "ppl": 4.334
+  },
+  "overall_peak_mem_gb": 10.74
+}

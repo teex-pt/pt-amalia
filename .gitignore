@@ -1,0 +1,19 @@
+# model weights & caches (published on Hugging Face, not here)
+amalia-mlx-4bit/
+amalia-mlx-8bit/
+gguf/
+gguf-src/
+*.gguf
+
+# tooling clones & envs
+.venv/
+llama.cpp/
+
+# transient run artifacts
+*.log
+*.pid
+*.done
+ppl-pt*.txt
+.DS_Store
+.cache/
+__pycache__/
