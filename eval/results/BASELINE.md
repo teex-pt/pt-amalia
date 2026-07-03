@@ -24,7 +24,9 @@ Respostas por item: `harness/results-baseline-bf16.jsonl`.
 | `ifeval-mt-pt` | 25 | prompt-level strict acc | **60,0%** |
 | `ifeval-mt-pt` | 25 | inst-level strict acc | **73,0%** |
 | `calame_pt_handwritten` | 50 | exact match | **20,0%** ⚠️ |
-| `amalia_gsm8k_cot_zeroshot_mt_pt` | 25 | exact match | _(a correr — preencher quando terminar)_ |
+| `amalia_gsm8k_cot_zeroshot_mt_pt` | 25 | exact match (flexible-extract) | **48,0%** |
+
+Nota GSM8K: o strict-match dá 0% porque em zero-shot o modelo não emite o formato `#### N` que a regex estrita espera — o flexible-extract é a métrica informativa aqui. Coerente com a categoria aritmética do harness (60% com problemas mais simples mas restrição de brevidade).
 
 ⚠️ **Caveat CALAME:** corrido com template de chat aplicado; o CALAME é uma tarefa de *completação* (prever a última palavra) e o consórcio avalia-o provavelmente sem template. O valor não é comparável com o technical report — serve apenas como referência interna antes/depois com o mesmo protocolo. Para números comparáveis com o consórcio, correr sem `--apply-chat-template` (e idealmente no setup vLLM deles).
 
