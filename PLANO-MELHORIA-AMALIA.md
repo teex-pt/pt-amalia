@@ -41,6 +41,7 @@ Objetivo: atacar os modos de falha observados (aritmética, instruction-followin
   - **Conteúdo legal (dre.pt, dgsi.pt):** textos oficiais isentos de direito de autor (CDADC); registo formal pt-PT em escala. Descontaminar contra `LegalBenchPT`; anonimizar decisões judiciais (RGPD) antes de redistribuir.
   - **BASE contratos públicos (base.gov.pt):** registo contratual/administrativo pt-PT, dados abertos.
   - **Uso:** QA ancorado (pergunta gerada sobre passagem; verificador = correspondência extrativa com a fonte), sementes de reescrita para a categoria variedade, e problemas de exame como aritmética com verdade dos critérios de correção.
+- **Datasets individuais, mistura por receita:** um dataset por categoria/fonte (`amalia-sft-aritmetica`, `-formato`, `-variedade`, `amalia-dpo-honestidade`, `amalia-qa-exames`, `-legal`, `-contratos`), todos com o mesmo esquema JSONL (messages, category, veredicto do verificador, proveniência: template_id/teacher/rewriter/source_url). O treino referencia-os com pesos (receita reproduzível). Vantagens: ablações 1:1 com as categorias do harness (causa-efeito medível), licenciamento/proveniência limpos por repositório, iteração independente, relatório de descontaminação por dataset.
 - **Descontaminar:** garantir que o dataset não contém itens dos benchmarks (pt_exams, LegalBenchPT, alba, cultura_viva incluídos).
 
 **4. LoRA piloto no Mac**
