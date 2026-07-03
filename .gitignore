@@ -20,3 +20,5 @@ ppl-pt*.txt
 .cache/
 amalia-lm-eval/
 eurollm-22b-mlx-4bit/
+datagen/out/
+datagen/merged/
