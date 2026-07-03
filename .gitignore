@@ -8,12 +8,13 @@ gguf-src/
 # tooling clones & envs
 .venv/
 llama.cpp/
+__pycache__/
 
 # transient run artifacts
+logs/
 *.log
 *.pid
 *.done
 ppl-pt*.txt
 .DS_Store
 .cache/
-__pycache__/
