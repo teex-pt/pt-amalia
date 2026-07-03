@@ -41,7 +41,7 @@ Objetivo: atacar os modos de falha observados (aritmética, instruction-followin
   - **Conteúdo legal (dre.pt, dgsi.pt):** textos oficiais isentos de direito de autor (CDADC); registo formal pt-PT em escala. Descontaminar contra `LegalBenchPT`; anonimizar decisões judiciais (RGPD) antes de redistribuir.
   - **BASE contratos públicos (base.gov.pt):** registo contratual/administrativo pt-PT, dados abertos.
   - **Uso:** QA ancorado (pergunta gerada sobre passagem; verificador = correspondência extrativa com a fonte), sementes de reescrita para a categoria variedade, e problemas de exame como aritmética com verdade dos critérios de correção.
-- **Datasets individuais, mistura por receita:** um dataset por categoria/fonte (`amalia-sft-aritmetica`, `-formato`, `-variedade`, `amalia-dpo-honestidade`, `amalia-qa-exames`, `-legal`, `-contratos`), todos com o mesmo esquema JSONL (messages, category, veredicto do verificador, proveniência: template_id/teacher/rewriter/source_url). O treino referencia-os com pesos (receita reproduzível). Vantagens: ablações 1:1 com as categorias do harness (causa-efeito medível), licenciamento/proveniência limpos por repositório, iteração independente, relatório de descontaminação por dataset.
+- **Datasets individuais, mistura por receita:** um dataset por categoria/fonte (`amalia-sft-aritmetica`, `-formato`, `-variedade`, `amalia-dpo-honestidade`, `amalia-qa-exames`, `-legal`, `-contratos`, e `amalia-sft-raciocinio-traces` com tokens `<think>` para o Path A), todos com o mesmo esquema JSONL (messages, category, veredicto do verificador, proveniência: template_id/teacher/rewriter/source_url). O treino referencia-os com pesos (receita reproduzível). Vantagens: ablações 1:1 com as categorias do harness (causa-efeito medível), licenciamento/proveniência limpos por repositório, iteração independente, relatório de descontaminação por dataset.
 - **Descontaminar:** garantir que o dataset não contém itens dos benchmarks (pt_exams, LegalBenchPT, alba, cultura_viva incluídos).
 - **O que a mistura SFT original (0626, ~6,5M amostras) já cobre — e porque ainda assim falha:** instruction-following (~2,1M, Nemotron traduzido/inglês, genérico), matemática (~1,4M), identidade (`Amalia_hardcoded`, 780 amostras ×5 — insuficiente: confabulação medida), linguística pt-PT (`ptpt-linguistics-if`, só 200). O próprio card admite «machine translated content … may contain translation errors or artifacts»; o filtro de qualidade foi um juiz LLM (Gemma-4-31B), não verificação por código. **Ausente da mistura:** exames IAVE, conteúdo legal, contratos públicos, e qualquer dado filtrado por verificadores determinísticos. → A nossa aposta não é volume: é dado pt-PT nativo, pequeno e certificado por código, nas falhas que 6,5M amostras não corrigiram — mais os três corpora reais intocados. O `Amalia_hardcoded` é o gancho de colaboração natural para o pipeline de honestidade.
 
@@ -63,6 +63,13 @@ Objetivo: atacar os modos de falha observados (aritmética, instruction-followin
 - Pares: aprovado/rejeitado da filtragem + pares on-policy.
 - Reavaliar com a regra de aceitação.
 
+**7b. Path A — AMALIA «pensante» por destilação (decidido 2026-07-03; extensão da Fase 1)**
+- Tokens `<think>`/`</think>` no tokenizer e no chat template (com remoção do bloco de raciocínio no serving).
+- Dataset `amalia-sft-raciocinio-traces`: amostrar o Ministral-3-14B-Reasoning (Apache 2.0 — os traces são legalmente utilizáveis) sobre problemas com resposta conhecida por construção; manter apenas traces cuja resposta final passa nos verificadores; renderizar em pt-PT pelo pipeline de dois andares. Alvo: 50–100k traces verificados.
+- **Ablação pt-PT vs inglês nos traces:** modelos tendem a raciocinar melhor em inglês; deliberação em português é um diferenciador de soberania — medir o custo/ganho, não assumir.
+- Treino: é apenas Full SFT — mesmo hardware e receita da Fase 1 (2× RTX 6000, FSDP + otimizador 8-bit). Nenhuma infraestrutura nova.
+- Scoreboard já existente no amalia-lm-eval: `aime_pt`, `math-pt`, `minerva_math_pt`, `bbh_mt`, variantes CoT do GSM8K. A regra de aceitação mantém-se (internacionais não descem >1–2 pontos).
+
 ## Fase 2 — Abrir e escalar
 
 **8. Publicar** dataset + harness + checkpoint no HF (Apache 2.0); apresentar resultados ao consórcio AMALIA com números do amalia-lm-eval.
@@ -71,6 +78,11 @@ Objetivo: atacar os modos de falha observados (aritmética, instruction-followin
 - Compute gratuito: candidatura FCT/EuroHPC (Deucalion, MareNostrum5).
 - Ou nó alugado 8× H100: SFT focado ~€500-1.500; ciclo completo SFT+DPO ~€3-15k.
 - Quando a base migrar para EuroLLM-22B (fase 2 do consórcio), repetir a receita — o dataset e o harness reaproveitam-se por inteiro.
+
+**9b. Path B — RLVR (GRPO) com os verificadores como recompensa (candidatura EuroHPC a preparar)**
+- Recompensas determinísticas: correção da resposta + conformidade de formato + **penalização de marcadores pt-BR** + penalização de comprimento excessivo. Anti reward-hacking por construção — os verificadores são código, não juízes LLM.
+- Piloto de viabilidade: LoRA-GRPO em 2× RTX 6000 Ada (semanas, sinal barato). Corrida real: nó 8× H100 durante vários dias (€5–15k) ou Deucalion/MareNostrum5 via grant.
+- Go/no-go decidido pelos resultados do Path A — a destilação captura a maior parte do ganho a 9B; o RLVR só se justifica se o delta restante compensar o grant.
 
 ---
 
@@ -83,4 +95,7 @@ Objetivo: atacar os modos de falha observados (aritmética, instruction-followin
 | Full SFT 9B | 2× RTX 6000 Ada | com 8-bit optimizer + FSDP; 2-4 dias |
 | Full SFT confortável | 8× H100 (nó) | horas; ~€2-3/GPU-h |
 | DPO 9B | 2× RTX 6000 Ada | ref logprobs pré-computados |
+| SFT de traces «think» (Path A) | 2× RTX 6000 Ada | igual ao Full SFT da Fase 1 |
+| RLVR GRPO piloto (LoRA) | 2× RTX 6000 Ada | semanas; sinal de viabilidade |
+| RLVR GRPO completo (Path B) | 8× H100 / EuroHPC | dias; €5–15k ou grant |
 | Base 22B | EuroHPC / nó alugado | quando existir AMALIA-22B |
