@@ -13,11 +13,16 @@ import argparse
 import json
 from pathlib import Path
 
+import os
+
 import mlx.core as mx
 
 try:
-    mx.set_memory_limit(24 * 1024**3)
-    mx.set_wired_limit(20 * 1024**3)
+    mx.set_memory_limit(int(os.environ.get("EVAL_MEM_GB", "24")) * 1024**3)
+    mx.set_wired_limit(int(os.environ.get("EVAL_WIRED_GB", "20")) * 1024**3)
+    # bound the Metal buffer cache: long generation loops otherwise accumulate
+    # freed buffers until the wired ceiling and die with a Metal OOM
+    mx.set_cache_limit(int(os.environ.get("EVAL_CACHE_GB", "3")) * 1024**3)
 except Exception:
     pass
 

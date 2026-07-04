@@ -1,0 +1,29 @@
+{
+  "label": "v4-ifeval",
+  "model": "./fused-v4",
+  "limit": 25,
+  "results": {
+    "ifeval-mt-pt": {
+      "name": "ifeval-mt-pt",
+      "alias": "ifeval-mt-pt",
+      "sample_len": 25,
+      "prompt_level_strict_acc,none": 0.64,
+      "prompt_level_strict_acc_stderr,none": 0.09797958971132711,
+      "inst_level_strict_acc,none": 0.7567567567567568,
+      "inst_level_strict_acc_stderr,none": "N/A",
+      "prompt_level_loose_acc,none": 0.6,
+      "prompt_level_loose_acc_stderr,none": 0.1,
+      "inst_level_loose_acc,none": 0.7027027027027027,
+      "inst_level_loose_acc_stderr,none": "N/A"
+    }
+  },
+  "versions": {
+    "ifeval-mt-pt": 4.0
+  },
+  "n-samples": {
+    "ifeval-mt-pt": {
+      "original": 541,
+      "effective": 25
+    }
+  }
+}
