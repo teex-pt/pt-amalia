@@ -207,6 +207,8 @@ def main():
     for f in (here / "out").glob(f"shard-{args.format_shard:03d}-draft-*.jsonl"):
         for line in open(f):
             r = json.loads(line)
+            if r["prompt"] in eval_prompts:
+                continue  # format templates share space with the seed-42 harness
             if r["category"] == "format" and r["verifier"]["passed"] and n_fmt < 100:
                 n_fmt += 1
                 rows.append({"messages": [{"role": "user", "content": r["prompt"]},
