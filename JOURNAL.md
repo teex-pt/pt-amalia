@@ -86,6 +86,23 @@ linked artifacts; this is the narrative thread.
   EUR-Lex), and the DR-sumário summarization idea; `leis-pt` spun out as a
   separate desktop project.
 
+## 2026-07-04 (cont.) — Publishing the pilot
+
+- Published the pilot artifacts on Hugging Face with deliberately honest cards
+  (the v1 rejection is part of the story, not hidden):
+  - [datasets/teex-pt/amalia-pilot-honesty-v2](https://huggingface.co/datasets/teex-pt/amalia-pilot-honesty-v2)
+    — v1 refusals-only (rejected) + v2 corrective mix, with provenance and results.
+  - [teex-pt/AMALIA-9B-0626-DPO-LoRA-honesty-pilot](https://huggingface.co/teex-pt/AMALIA-9B-0626-DPO-LoRA-honesty-pilot)
+    — the v2 adapter, framed as a research artifact demonstrating the
+    verifier-gated method, with a one-command demo (fabricated poet → base
+    model invents a biography; with adapter → honest "não sei").
+- This delivers the plan's Fase-2 "publicar dataset + resultados" at pilot
+  scale, months early — and gives the EuroHPC application a concrete, linkable
+  demonstration.
+- **Ollama publish deliberately paused** (Filipe's call: unreliable uplink).
+  Models built, key authorized — publishing is one command when the network
+  is right.
+
 ## Standing decisions
 
 - Every dataset sample is gated by deterministic code verifiers; ground truth
