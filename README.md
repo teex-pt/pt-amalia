@@ -1,6 +1,6 @@
 # pt-amalia
 
-Quantization, benchmarking and findings for **AMALIA-9B** — the Portuguese (pt-PT) 9B open-source LLM presented on 1 July 2026 — plus an improvement plan for its observed failure modes.
+Quantization, benchmarking and findings for **AMALIA-9B** — the Portuguese (pt-PT) 9B open-source LLM presented on 1 July 2026 — plus an improvement plan for its observed failure modes. The project's chronological narrative lives in [JOURNAL.md](JOURNAL.md).
 
 We published the first Apple Silicon (MLX) and cross-platform (GGUF) builds of the model, each with a findings-driven model card:
 
