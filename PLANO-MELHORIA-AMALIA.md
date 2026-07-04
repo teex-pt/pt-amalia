@@ -33,6 +33,7 @@ Objetivo: atacar os modos de falha observados (aritmética, instruction-followin
   | Formato / instruction-following | Ministral-3-14B (1.ª tentativa); Mistral Small 3.2 como fallback | medir yield e decidir |
   | Variedade pt-PT / prosa | EuroLLM-22B-Instruct ou AMALIA | fidelidade pt-PT é o critério; Mistral fica fora |
   | Honestidade / anti-confabulação | qualquer | pares em grande parte construídos por template |
+  | Volume/velocidade (Fase 1) | **Gemma-4-26B-A4B-it** (MoE, ~70 tok/s no M5 Pro) | ⚠️ Gemma ToU, não Apache: os outputs são livres (Google não reclama direitos) e o próprio consórcio usou Gemma-4-31B na mistura — mas fatias geradas por Gemma levam proveniência própria e card honesto; decidir por yield medido |
 - **DPO on-policy:** as respostas diretas do AMALIA que chumbam nos verificadores são os «rejected»; a resposta verificada do pipeline é o «chosen». Corrige erros que o modelo realmente comete.
 - **Áreas prioritárias (Tier 1, verificáveis por código):** instruction-following com restrições duras; problemas aritméticos com restrição de brevidade; pureza pt-PT (reescritas pt-BR→pt-PT + geração condicionada); anti-confabulação (entidades fabricadas + eventos futuros). **Tier 2:** QA cultural ancorado em fontes; código (humaneval_pt); tradução en→pt-PT como proteção anti-regressão.
 - Nunca Claude/GPT: os ToS proíbem treinar modelos com os outputs — vício jurídico num dataset Apache 2.0. Com o pipeline acima, todos os tokens do dataset são de modelos Apache 2.0.
