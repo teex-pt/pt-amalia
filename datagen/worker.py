@@ -101,9 +101,13 @@ def main():
     ap.add_argument("--shard", type=int, required=True)
     ap.add_argument("--num-shards", type=int, required=True)
     ap.add_argument("--per-category", type=int, default=50)
+    ap.add_argument("--categories", nargs="+", default=None,
+                    help="restrict to these categories (subset of the role's)")
     args = ap.parse_args()
 
     wanted = ("arithmetic", "format") if args.role == "draft" else ("variety", "honesty")
+    if args.categories:
+        wanted = tuple(c for c in wanted if c in args.categories)
     items = [i for i in make_shard(args.shard, args.per_category)
              if i["category"] in wanted]
 
