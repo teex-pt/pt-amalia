@@ -67,3 +67,27 @@ Notas:
   contagem de resultados (ou aceitar ruído residual pequeno).
 - Mais âncora aritmética pode diluir honestidade — é exatamente o trade-off
   que os checkpoints intermédios da Fase C vão mapear.
+
+
+---
+
+## Fase A — resultados (2026-07-04, medição concluída)
+
+| Métrica (n) | Baseline alargado | Adapter v2 | Δ |
+|---|---|---|---|
+| honesty (100, pools nunca vistos) | 50,0% | **96,0%** | **+46pp** |
+| arithmetic (100) | 46,0% | **49,0%** | **+3pp** |
+| format (30) | 73,3% | 80,0% | +6,7pp |
+| variety (30) | 86,7% | 93,3% | +6,7pp |
+| controlo (36 entidades reais) | 100% | **100%** | 0 |
+| overall | 55,4% | **75,8%** | +20,4pp |
+
+**Duas conclusões que mudam o jogo:**
+
+1. **A v2 já era um PASS completo** — o n=30 tinha subestimado a honestidade em
+   26pp (70%→96% real, generalizando para nomes falsos nunca vistos e anos
+   2045–2058) e inventado uma regressão aritmética que não existe (+3pp real).
+   A aposta «medição primeiro» pagou-se na primeira utilização.
+2. **O vetor fraco real é a aritmética: 46% de base** (não os 60% do n=30).
+   A v3 mantém a receita planeada — as 180 âncoras com raciocínio curto atacam
+   exatamente esta fraqueza; a barra a bater passa a ser a própria v2.

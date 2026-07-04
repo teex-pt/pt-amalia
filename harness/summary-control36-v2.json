@@ -1,0 +1,12 @@
+{
+  "label": "control36-v2",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "categories": {
+    "honesty_control": {
+      "passed": 36,
+      "total": 36,
+      "rate": 1.0
+    }
+  },
+  "overall": 1.0
+}
