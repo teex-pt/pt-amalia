@@ -154,6 +154,35 @@ class MLX:
         self.mx.clear_cache()
 
 
+def load_eval_prompts(here):
+    eval_prompts = set()
+    for fname in ("prompts.jsonl", "prompts-extended.jsonl",
+                  "control_prompts.jsonl", "control_prompts_v3.jsonl"):
+        fp = here.parent / "harness" / fname
+        if fp.exists():
+            eval_prompts |= {json.loads(l)["prompt"] for l in open(fp)}
+    return eval_prompts
+
+
+def clean(rows, eval_prompts):
+    return [r for r in rows if r["messages"][0]["content"] not in eval_prompts]
+
+
+def cached_slice(here, name, builder):
+    """Persist model-generated slices; reruns reuse them instead of regenerating."""
+    cache = here / "mix-v3" / "slices" / f"{name}.jsonl"
+    if cache.exists():
+        rows = [json.loads(l) for l in open(cache)]
+        print(f"{name}: reused {len(rows)} cached rows", flush=True)
+        return rows
+    rows = builder()
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    with open(cache, "w") as f:
+        for r in rows:
+            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+    return rows
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--teacher", default="mlx-community/Ministral-3-14B-Reasoning-2512-4bit")
@@ -162,9 +191,16 @@ def main():
     args = ap.parse_args()
     here = Path(__file__).parent
     rng = random.Random(7300)
+    eval_prompts = load_eval_prompts(here)
 
-    # ---- slice 1: refusals (no model) ----
-    rows = build_refusals(200, rng)
+    # ---- slice 1: refusals (no model), resampled until collision-free ----
+    rows, seed = [], 7300
+    while len(rows) < 200:
+        batch = clean(build_refusals(80, random.Random(seed)), eval_prompts)
+        existing = {r["messages"][0]["content"] for r in rows}
+        rows += [b for b in batch if b["messages"][0]["content"] not in existing][:200 - len(rows)]
+        seed += 1
+    print(f"refusals: 200 collision-free", flush=True)
 
     # ---- slice 2: format anchors from worker shard ----
     n_fmt = 0
@@ -178,13 +214,30 @@ def main():
                              "slice": "format"})
     print(f"format anchors: {n_fmt}", flush=True)
 
-    # ---- slice 3: reasoned arithmetic (Ministral) ----
-    teacher = MLX(args.teacher)
-    rows += reasoned_arithmetic(180, rng, teacher)
-    teacher.unload()
+    # ---- slice 3: reasoned arithmetic (Ministral, cached) ----
+    def _arith():
+        teacher = MLX(args.teacher)
+        out = reasoned_arithmetic(180, rng, teacher)
+        teacher.unload()
+        return out
+    rows += clean(cached_slice(here, "arith_reasoned", _arith), eval_prompts)
 
-    # ---- slices 4+5: real-QA and boundary pairs (AMALIA on-policy) ----
-    student = MLX(args.student)
+    # ---- slices 4+5: real-QA and boundary pairs (AMALIA on-policy, cached) ----
+    def _onpolicy():
+        student = MLX(args.student)
+        out = _build_onpolicy(rng, student)
+        student.unload()
+        return out
+    rows += clean(cached_slice(here, "onpolicy", _onpolicy), eval_prompts)
+
+    # collision check (hard fail) — should never trigger after clean()
+    collisions = [r for r in rows if r["messages"][0]["content"] in eval_prompts]
+    assert not collisions, f"TRAIN/EVAL COLLISION: {len(collisions)} prompts overlap!"
+    _write(here, rows, rng)
+
+
+def _build_onpolicy(rng, student):
+    rows = []
     real_qs = []
     for who, keys in ALL_ENTITIES:
         pool = PLACE_PROMPTS if not is_person(who) else REAL_PROMPTS
@@ -216,18 +269,10 @@ def main():
                          "slice": "boundary_fake"})
             n_b += 2
     print(f"boundary pairs: {n_b} rows", flush=True)
-    student.unload()
+    return rows
 
-    # ---- collision check against evaluation files (hard fail) ----
-    eval_prompts = set()
-    for fname in ("prompts.jsonl", "prompts-extended.jsonl",
-                  "control_prompts.jsonl", "control_prompts_v3.jsonl"):
-        fp = here.parent / "harness" / fname
-        if fp.exists():
-            eval_prompts |= {json.loads(l)["prompt"] for l in open(fp)}
-    collisions = [r for r in rows if r["messages"][0]["content"] in eval_prompts]
-    assert not collisions, f"TRAIN/EVAL COLLISION: {len(collisions)} prompts overlap!"
 
+def _write(here, rows, rng):
     rng.shuffle(rows)
     n_valid = max(50, len(rows) // 12)
     out = here / "mix-v3"
