@@ -103,6 +103,21 @@ linked artifacts; this is the narrative thread.
   Models built, key authorized — publishing is one command when the network
   is right.
 
+## 2026-07-04/05 — Pilot v3: measurement first, then a clean ablation
+
+- **Fase A (n=100) rewrote history:** v2 was already a full pass — honesty 96%
+  (not 70%), arithmetic +3pp (not a regression). The n=30 verdicts had erred in
+  both directions. True weak vector: arithmetic at 46% base.
+- The train/eval collision guard fired twice (13 + 6 overlapping prompts) and
+  was right both times; slice caching turned 2h reruns into 1 minute.
+- **v3 rejected as overall winner** (arithmetic answer-only 36%, honesty 81% vs
+  v2's 49%/96%) — but delivered the pilots' most interesting discovery:
+  **anchor style transfers to task style**. Reasoning-style anchors boosted
+  GSM8K CoT +16pp and IFEval +8pp while degrading answer-only arithmetic;
+  bare-answer anchors (v2) do the reverse. Clean ablation, same mix otherwise.
+- Late-training collapse at ck300 (honesty 90%→24%): stop at ~200 iters.
+- v4 hypothesis ready: both anchor styles with matched instructions.
+
 ## Standing decisions
 
 - Every dataset sample is gated by deterministic code verifiers; ground truth

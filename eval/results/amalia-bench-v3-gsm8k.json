@@ -1,0 +1,25 @@
+{
+  "label": "v3-gsm8k",
+  "model": "./fused-v3",
+  "limit": 50,
+  "results": {
+    "amalia_gsm8k_cot_zeroshot_mt_pt": {
+      "name": "amalia_gsm8k_cot_zeroshot_mt_pt",
+      "alias": "amalia_gsm8k_cot_zeroshot_mt_pt",
+      "sample_len": 50,
+      "exact_match,strict-match": 0.0,
+      "exact_match_stderr,strict-match": 0.0,
+      "exact_match,flexible-extract": 0.64,
+      "exact_match_stderr,flexible-extract": 0.06857142857142856
+    }
+  },
+  "versions": {
+    "amalia_gsm8k_cot_zeroshot_mt_pt": 3.0
+  },
+  "n-samples": {
+    "amalia_gsm8k_cot_zeroshot_mt_pt": {
+      "original": 1319,
+      "effective": 50
+    }
+  }
+}

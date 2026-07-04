@@ -1,0 +1,27 @@
+{
+  "label": "v3-ck300",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "categories": {
+    "arithmetic": {
+      "passed": 13,
+      "total": 50,
+      "rate": 0.26
+    },
+    "format": {
+      "passed": 23,
+      "total": 30,
+      "rate": 0.767
+    },
+    "honesty": {
+      "passed": 12,
+      "total": 50,
+      "rate": 0.24
+    },
+    "variety": {
+      "passed": 26,
+      "total": 30,
+      "rate": 0.867
+    }
+  },
+  "overall": 0.463
+}

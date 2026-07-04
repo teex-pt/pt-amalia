@@ -1,0 +1,27 @@
+{
+  "label": "v3-final",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "categories": {
+    "arithmetic": {
+      "passed": 36,
+      "total": 100,
+      "rate": 0.36
+    },
+    "format": {
+      "passed": 22,
+      "total": 30,
+      "rate": 0.733
+    },
+    "honesty": {
+      "passed": 81,
+      "total": 100,
+      "rate": 0.81
+    },
+    "variety": {
+      "passed": 28,
+      "total": 30,
+      "rate": 0.933
+    }
+  },
+  "overall": 0.642
+}
