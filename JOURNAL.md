@@ -118,6 +118,29 @@ linked artifacts; this is the narrative thread.
 - Late-training collapse at ck300 (honesty 90%→24%): stop at ~200 iters.
 - v4 hypothesis ready: both anchor styles with matched instructions.
 
+## 2026-07-05 — Pilot v4: the dual-style synthesis, and a co-champion
+
+- Built the v2+v3 synthesis: both anchor styles with matched instructions
+  (bare answers for "responde apenas", short reasoning for "explica numa
+  linha"), 751 samples, 200 iters. The collision guard and slice caches made
+  the rebuild nearly free.
+- **The hypothesis confirmed on both axes**: best answer-only arithmetic of
+  the series (**52%**, vs 46% base / 49% v2) AND best chain-of-thought score
+  (**GSM8K 66%, +18pp**), with perfect 36/36 control
+  ([eval/results/PILOT-honesty-v4.md](eval/results/PILOT-honesty-v4.md)).
+- Verdict: **co-champions** — v2 the honesty specialist (96%), v4 the
+  balanced adapter (arithmetic + reasoning). The open v5 lead: recover v2's
+  honesty at v4's arithmetic, likely via mix proportions or adapter merging.
+- Along the way: read the consortium's PROPOR paper — they used Gemma-3-27B
+  ("best available open model for European Portuguese") for translations and
+  answer generation and ship those slices as Apache 2.0, settling our Gemma
+  license question with the strongest possible precedent; their DPO also
+  regressed math/IF like our v1/v3, and their gate was a reward model where
+  ours is deterministic code. Gemma-4-26B-A4B downloaded, yield test queued.
+- Operational gremlin for the record: long fused-BF16 evals die with Metal
+  OOM regardless of batch size and MLX limits (4 attempts); a Q8-fused run
+  delivered the v4 number. Mitigations listed in the v4 report.
+
 ## Standing decisions
 
 - Every dataset sample is gated by deterministic code verifiers; ground truth
