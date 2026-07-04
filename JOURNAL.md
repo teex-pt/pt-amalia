@@ -1,0 +1,79 @@
+# Journal — the pt-amalia journey
+
+Chronological log of what was done, decided, and learned. Details live in the
+linked artifacts; this is the narrative thread.
+
+## 2026-07-02 — Day 1: run it, quantize it, measure it
+
+- Ran **AMALIA-9B-0626-DPO** (released the day before) on a MacBook M5 Pro via
+  MLX: BF16 at 16–17 tok/s, 18.5 GB peak. First contact in pt-PT was flawless.
+- Built MLX **8-bit** and **4-bit** quantizations and a deterministic benchmark
+  suite ([benchmarks/](benchmarks/)). Findings: **Q8 is lossless in practice**
+  (+0.3% perplexity); Q4 is 3.4× faster but shows real slips (hallucinated
+  Camões works, an English word in pt-PT JSON).
+- Hard lesson: an 18.5 GB wired-memory model + a loaded system froze the Mac →
+  every heavy run since uses `mx.set_memory_limit` + an external memory watchdog.
+
+## 2026-07-03 — Day 2: publish everything, fix the identity, build the eval
+
+- Built **GGUF Q4_K_M + Q8_0** (llama.cpp); measured perplexity on 16.5k tokens
+  of real pt prose: Q8_0 −0.1% (noise), **Q4_K_M +2.7% — K-quants beat plain
+  RTN 4-bit** (+4.3%) at the same size.
+- Published the first community builds of AMALIA, with findings-driven model
+  cards: [MLX-8bit](https://huggingface.co/teex-pt/AMALIA-9B-0626-DPO-MLX-8bit),
+  [MLX-4bit](https://huggingface.co/teex-pt/AMALIA-9B-0626-DPO-MLX-4bit),
+  [GGUF](https://huggingface.co/teex-pt/AMALIA-9B-0626-DPO-GGUF); repo created
+  at [teex-pt/pt-amalia](https://github.com/teex-pt/pt-amalia); Ollama models
+  built as `teex/amalia` (publish pending a stable uplink).
+- **Identity discovery:** without a system prompt the model invents personas
+  ("Guia Lince") and origins (fake universities/funding). Our builds embed a
+  factual default presentation ([templates/chat_template.jinja](templates/chat_template.jinja));
+  llama.cpp needs `--jinja` to honor it; Ollama gets a `system` file.
+- Wrote the improvement plan ([PLANO-MELHORIA-AMALIA.md](PLANO-MELHORIA-AMALIA.md));
+  analyzed the consortium's 6.5M-sample SFT mix — massive translated IF/math
+  volume, **zero deterministically-verified data**, and the failure modes we
+  measured survived it. Our lane: small, pt-PT-native, code-verified data.
+- Decided **Path A** (thinking-model distillation as Fase-1 extension) and
+  **Path B** (RLVR/GRPO with our verifiers as rewards, EuroHPC grant).
+- Built the **pt-PT harness** ([harness/](harness/)): 120 seeded prompts, four
+  failure-mode categories, all scored by code verifiers (no LLM judging), unit
+  tested. Made the consortium's AMALIA-Bench run on a Mac via MLX ([eval/](eval/)).
+- **Fase-0 baseline** ([eval/results/BASELINE.md](eval/results/BASELINE.md)):
+  honesty 43.3%, arithmetic 60%, format 73.3%, variety 86.7% — the weak spots
+  are exactly where the original mix has no verified data.
+- Built and smoke-tested the **two-stage synthetic pipeline** ([datagen/](datagen/)):
+  Ministral-3-14B-Reasoning drafts, EuroLLM-22B/AMALIA render pt-PT, verifiers
+  gate the final text. Key fix: **verify-early** — a draft that already passes
+  is never rewritten (rewriting correct answers only breaks them). Yield after
+  fix: 14/16, then 12/12 in the distributed worker smoke.
+- Teacher fleet downloaded, all Apache 2.0: Ministral-3-14B-Reasoning (drafts),
+  Mistral Small 3.2 (content), EuroLLM-22B (pt-PT surface), AMALIA (on-policy).
+- Built the **distributed generation toolkit** (worker + merge with central
+  re-verification) for the heterogeneous home fleet (M5 Pro, M1 16GB,
+  RTX 4060 Ti via llama-server) — generation parallelizes; training doesn't.
+
+## 2026-07-04 — Day 3: the first full train-and-measure cycle
+
+- **LoRA pilot v1 on the honesty vector**
+  ([eval/results/PILOT-honesty-v1.md](eval/results/PILOT-honesty-v1.md)):
+  440 templated pt-PT refusals → `mlx_lm.lora` (400 iters, ~12 min) → full
+  harness + a new real-entity control set. Whole cycle ≈ 1 hour on the laptop.
+- Result: **honesty +43.4pp (43.3→86.7%)** — but the acceptance rule **rejected
+  the checkpoint**: arithmetic collapsed (−23.3pp, computation interference,
+  not refusals) and the control caught over-refusal with template overfit (the
+  model refused Vasco da Gama and hallucinated names from our fake-entity pools).
+- The strategic validation: the measurement infrastructure **caught both damages
+  automatically**. Without the harness + control, this adapter looked like a
+  win. v2 recipe: mixed data (refusals + real-QA + verified anchor slices),
+  fewer iters, more template diversity, DPO for this vector.
+
+## Standing decisions
+
+- Every dataset sample is gated by deterministic code verifiers; ground truth
+  is computed by templates, never by a model.
+- Teachers must be Apache 2.0 (never Claude/GPT outputs).
+- Honesty/DPO negatives always come from AMALIA itself (on-policy).
+- Acceptance rule for any checkpoint: pt-PT harness up, international
+  benchmarks and controls within 1–2 points.
+- Decontaminate against the consortium benchmarks (pt_exams, LegalBenchPT,
+  alba, cultura_viva) before any dataset release.
