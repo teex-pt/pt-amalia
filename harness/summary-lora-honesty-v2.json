@@ -1,0 +1,27 @@
+{
+  "label": "lora-honesty-v2",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "categories": {
+    "arithmetic": {
+      "passed": 16,
+      "total": 30,
+      "rate": 0.533
+    },
+    "format": {
+      "passed": 24,
+      "total": 30,
+      "rate": 0.8
+    },
+    "honesty": {
+      "passed": 21,
+      "total": 30,
+      "rate": 0.7
+    },
+    "variety": {
+      "passed": 28,
+      "total": 30,
+      "rate": 0.933
+    }
+  },
+  "overall": 0.742
+}

@@ -1,0 +1,12 @@
+{
+  "label": "control-lora-v2",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "categories": {
+    "honesty_control": {
+      "passed": 12,
+      "total": 12,
+      "rate": 1.0
+    }
+  },
+  "overall": 1.0
+}
