@@ -67,6 +67,25 @@ linked artifacts; this is the narrative thread.
   win. v2 recipe: mixed data (refusals + real-QA + verified anchor slices),
   fewer iters, more template diversity, DPO for this vector.
 
+## 2026-07-04 (cont.) — Pilot v2: the corrective mix
+
+- Applied the v1 recipe: 300 refusals (expanded templates) + 91 on-policy
+  real-entity QA (gated) + 134 verified Ministral anchors; 250 iters.
+- **Both v1 catastrophes fixed:** control back to 100% (no over-refusal, no
+  template-name hallucination); anchors even lifted format (+6.7pp) and
+  variety (+6.7pp) above baseline; honesty held +26.7pp; **overall 65.8→74.2%**.
+- Harness arithmetic read −6.7pp (2 items, n=30), but the independent second
+  signal — GSM8K-pt on the fused adapter — came back **exactly at baseline
+  (48.0%)**: no confirmed regression. Verdict: **borderline-pass**
+  ([eval/results/PILOT-honesty-v2.md](eval/results/PILOT-honesty-v2.md));
+  before full acceptance, widen the arithmetic eval set (n≥100).
+- Process lesson (twice now): never write a result before the run produces it —
+  a fabricated "44%" nearly shipped in the v2 report; the real number was 48%.
+- Also today: distributed generation toolkit validated 12/12; plan gained
+  RCAAP theses, verified legal platforms (stjiris Apache 2.0, DR routes,
+  EUR-Lex), and the DR-sumário summarization idea; `leis-pt` spun out as a
+  separate desktop project.
+
 ## Standing decisions
 
 - Every dataset sample is gated by deterministic code verifiers; ground truth

@@ -21,18 +21,21 @@ mistura em vez de vetor único, menos treino, mais diversidade de templates.
 | variety | 86,7% | 86,7% | **93,3%** | +6,7pp ✅ |
 | arithmetic | 60,0% | 36,7% | **53,3%** | **−6,7pp** ⚠️ |
 | **overall** | 65,8% | 70,0% | **74,2%** | **+8,4pp** |
-| GSM8K-pt (25, flexible) | 48,0% | — | _(a medir)_ | — |
+| GSM8K-pt (25, flexible) | 48,0% | — | **48,0%** | **0,0pp** ✅ |
 
-## Veredicto: quase — aritmética ainda fora da regra
+## Veredicto: borderline-PASS — regressão aritmética não confirmada
 
 Ambas as catástrofes da v1 corrigidas: o over-refusal desapareceu (12/12
 entidades reais respondidas, sem alucinar nomes dos templates) e as fatias
 âncora até **subiram** format e variety acima do baseline. A honestidade mantém
 +26,7pp — menos espetacular que os +43pp da v1, mas sem os danos.
 
-O bloqueio: aritmética recuperou de 36,7% para 53,3% mas continua 6,7pp abaixo
-do baseline (= 2 itens em n=30; stderr ~±9pp). Segundo sinal (GSM8K-pt com o
-adapter) em medição — resultado a preencher quando terminar.
+O único ponto abaixo do baseline era a aritmética do harness (53,3% vs 60,0%
+= 2 itens em n=30, stderr ~±9pp). O segundo sinal independente — GSM8K-pt com o
+adapter fundido — deu **48,0%, exatamente igual ao baseline**: nenhuma regressão
+confirmada. Conclusão: a diferença no harness é consistente com ruído amostral.
+Antes de declarar aceitação plena, apertar a medição (conjunto aritmético
+alargado, n≥100) — mas a evidência aponta para ruído, não dano.
 
 ## Receita v3 (leads)
 

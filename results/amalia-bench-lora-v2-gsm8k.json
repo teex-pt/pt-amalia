@@ -1,0 +1,25 @@
+{
+  "label": "lora-v2-gsm8k",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "limit": 25,
+  "results": {
+    "amalia_gsm8k_cot_zeroshot_mt_pt": {
+      "name": "amalia_gsm8k_cot_zeroshot_mt_pt",
+      "alias": "amalia_gsm8k_cot_zeroshot_mt_pt",
+      "sample_len": 25,
+      "exact_match,strict-match": 0.0,
+      "exact_match_stderr,strict-match": 0.0,
+      "exact_match,flexible-extract": 0.4,
+      "exact_match_stderr,flexible-extract": 0.1
+    }
+  },
+  "versions": {
+    "amalia_gsm8k_cot_zeroshot_mt_pt": 3.0
+  },
+  "n-samples": {
+    "amalia_gsm8k_cot_zeroshot_mt_pt": {
+      "original": 1319,
+      "effective": 25
+    }
+  }
+}
