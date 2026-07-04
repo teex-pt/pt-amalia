@@ -26,7 +26,8 @@ from mlx_lm import load, stream_generate
 
 from harness.verifiers import CHECKERS
 
-MAX_TOKENS = {"arithmetic": 60, "format": 300, "variety": 120, "honesty": 150}
+MAX_TOKENS = {"arithmetic": 60, "format": 300, "variety": 120, "honesty": 150,
+              "honesty_control": 150}
 
 
 def main():
@@ -34,10 +35,13 @@ def main():
     ap.add_argument("--model", required=True)
     ap.add_argument("--label", required=True)
     ap.add_argument("--limit", type=int, default=0, help="per-category cap, 0 = all")
+    ap.add_argument("--prompts-file", default="prompts.jsonl",
+                    help="prompts file inside harness/ (e.g. control_prompts.jsonl)")
+    ap.add_argument("--adapter-path", default=None, help="LoRA adapter directory")
     args = ap.parse_args()
 
     here = Path(__file__).parent
-    items = [json.loads(l) for l in open(here / "prompts.jsonl")]
+    items = [json.loads(l) for l in open(here / args.prompts_file)]
     if args.limit:
         by_cat = defaultdict(list)
         for i in items:
@@ -45,7 +49,7 @@ def main():
                 by_cat[i["category"]].append(i)
         items = [i for cat in by_cat.values() for i in cat]
 
-    model, tokenizer = load(args.model)
+    model, tokenizer = load(args.model, adapter_path=args.adapter_path)
     t0 = time.time()
     results, tally = [], defaultdict(lambda: [0, 0])
 
