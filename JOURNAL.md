@@ -141,6 +141,21 @@ linked artifacts; this is the narrative thread.
   OOM regardless of batch size and MLX limits (4 attempts); a Q8-fused run
   delivered the v4 number. Mitigations listed in the v4 report.
 
+## 2026-07-05/06 — The merge strategy ("v5 for free")
+
+- The open question after v4: can v2's honesty (96%) and v4's arithmetic (52%)
+  coexist in one adapter? Before training anything, we try **adapter soup** —
+  a weighted average of the two LoRA weight sets (they share architecture, so
+  the merge is pure vector arithmetic, seconds of compute, zero training).
+- Built [scripts/merge_adapters.py](scripts/merge_adapters.py) and two blends:
+  `merge-50` (50/50) and `merge-65v2` (65% toward the honesty specialist).
+- Evaluation protocol, same as the pilots: subset sweep of both blends →
+  winner by max honesty among arithmetic-eligible (≥43%) → full extended
+  harness + control-36. Success bar: ~93%+ honesty with 50%+ arithmetic and a
+  perfect control — the best-of-both champion for the cost of an average.
+- **Status: blends built, evaluations deferred** (Filipe's call — machine
+  needed elsewhere). Resume is one command; ~1h45 of background compute.
+
 ## Standing decisions
 
 - Every dataset sample is gated by deterministic code verifiers; ground truth
