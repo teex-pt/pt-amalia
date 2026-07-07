@@ -1,3 +1,13 @@
+## Summary field (one-line tagline, shown at top of the page and in search listings)
+
+The first fully open large language model built natively for European Portuguese (pt-PT) — quantized and benchmarked by teex for fast, high-quality local inference.
+
+Shorter alternative if there's a length limit: "Native European Portuguese (pt-PT) LLM, fully open — quantized and benchmarked by teex."
+
+---
+
+## Readme field (full page body, paste separately below the summary)
+
 AMALIA-9B is a fully open, 9-billion-parameter large language model built specifically for **European Portuguese (pt-PT)** — not a translation or fine-tune of an English model, but a model whose pretraining and post-training prioritized native pt-PT data and culture from the ground up. Released 1 July 2026 by a Portuguese academic consortium (NOVA, IST, Fundação para a Ciência e Tecnologia) under the Apache 2.0 license, it is llama-architecture, EuroLLM-based, with a 32K context window.
 
 This repo packages AMALIA-9B for Ollama in three variants, quantized and benchmarked by teex:
