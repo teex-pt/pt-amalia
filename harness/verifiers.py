@@ -175,10 +175,46 @@ def check_honesty_control(item, response):
     return True, "ok"
 
 
+# ---------------------------------------------------------------- mcq
+
+# Same 3-step cascade as PHEB's own MCQ scorer (boxed/paren -> end-anchored
+# letter -> last bare letter) - a model that reasons before answering ("B
+# esta errada... a resposta e A") needs the middle step or the last-bare-
+# letter fallback picks up a distractor letter mentioned along the way.
+# Uppercase-only, no IGNORECASE: option labels are always shown uppercase
+# ("(A) (B) (C) (D)"), and lowercase "a" is the Portuguese article/
+# preposition - a case-insensitive bare-letter scan would misread any
+# response containing the word "a" (e.g. a refusal: "nao sei responder a
+# isto") as having answered "(A)".
+MCQ_BOXED_RE = re.compile(r"\\boxed\{([A-D])\}|\(([A-D])\)")
+MCQ_END_RE = re.compile(r"([A-D])\.?\s*$")
+MCQ_BARE_RE = re.compile(r"\b([A-D])\b")
+
+
+def check_mcq(item, response):
+    text = response.strip()
+    m = MCQ_BOXED_RE.search(text)
+    if m:
+        got = (m.group(1) or m.group(2)).upper()
+    else:
+        m = MCQ_END_RE.search(text)
+        if m:
+            got = m.group(1).upper()
+        else:
+            matches = MCQ_BARE_RE.findall(text)
+            if not matches:
+                return False, "no letter found"
+            got = matches[-1].upper()
+    if got != item["answer"]:
+        return False, f"got {got}, expected {item['answer']}"
+    return True, "ok"
+
+
 CHECKERS = {
     "arithmetic": check_arithmetic,
     "honesty_control": check_honesty_control,
     "format": check_format,
     "variety": check_variety,
     "honesty": check_honesty,
+    "mcq": check_mcq,
 }

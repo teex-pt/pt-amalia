@@ -90,6 +90,10 @@ MCQ_OPTION_RE = re.compile(r"\([A-D]\)")
 # page's header bleeds in before the following item's number line - always
 # starts with "Prova " + a 3-digit exam code, never part of legitimate prose.
 FOOTER_RE = re.compile(r"\s*Prova\s+\d{3}.*", re.DOTALL)
+# Bullet/dash-leader glyph that pdftotext renders as a BEL control char
+# instead of a printable marker - always safe to drop (verified no case sits
+# between two word characters, so removal never merges adjacent words).
+BEL_RE = re.compile("\x07")
 
 
 def find_question_text(exam_text, item_num):
@@ -111,6 +115,7 @@ def find_question_text(exam_text, item_num):
         re.MULTILINE | re.DOTALL)
     for m in pattern.finditer(exam_text):
         q = FOOTER_RE.sub("", m.group(1)).strip()
+        q = BEL_RE.sub("", q)
         q = re.sub(r"\n{2,}", "\n", q).strip()
         if not (10 < len(q) < 3000):
             continue

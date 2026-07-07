@@ -27,7 +27,7 @@ from mlx_lm import load, stream_generate
 from harness.verifiers import CHECKERS
 
 MAX_TOKENS = {"arithmetic": 60, "format": 300, "variety": 120, "honesty": 150,
-              "honesty_control": 150}
+              "honesty_control": 150, "mcq": 40}
 
 
 def main():

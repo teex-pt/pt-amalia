@@ -36,7 +36,15 @@ so far. A K-12 tutor in the full sense needs those too; see JOURNAL.md.
    paired with question text (99% yield).**
 3. `iave_build_mix.py` — converts to the project's standard `messages`
    schema. Two-version exams (shuffled options) produce two records each.
-   **462 samples (416 train / 46 valid).**
+   Before splitting, reserves **11 whole exam sittings (37 items, 11
+   distinct subjects) for `harness/iave_prompts.jsonl`** — a held-out
+   harness eval set, disjoint at the sitting level (not just row level) so
+   items sharing a reading passage/stimulus can't leak across train/eval.
+   Reservation is smallest-sittings-first with one sitting per subject code,
+   to maximize subject diversity without gutting any one subject's training
+   presence. The remaining **425 samples (383 train / 42 valid)** get the
+   usual random row-level split — fine for an SFT trainer's loss-monitoring
+   split, not intended as a benchmark.
 
 ## Known limitations
 
@@ -48,6 +56,24 @@ so far. A K-12 tutor in the full sense needs those too; see JOURNAL.md.
   462, 25%**) so they can be filtered or reviewed separately. Plain-number,
   combinatorics, and geometry-by-figure items in these same subjects
   extract cleanly — the flag is a coarse per-subject signal, not per-item.
+- **Bullet-glyph control characters (found and fixed).** 60/270 records
+  (22%) carried a stray `\x07` (BEL) character where a PDF bullet/dash-
+  leader glyph didn't map to a printable character — mostly Português and
+  Economia A items. Cosmetic, not a ground-truth error, but common enough
+  to be worth fixing rather than leaving as noise: verified every
+  occurrence sits between non-word characters (never merges two words),
+  and `iave_extract.py` now strips it unconditionally.
+- **Train/valid split is row-level, not sitting-level.** Before the
+  sitting-level holdout was added for `harness/iave_prompts.jsonl`, the
+  same random-shuffle split that produces `mix/{train,valid}.jsonl` was
+  found to leak at the sitting level: all 13 sittings then represented in
+  `valid` also had other items from the same sitting in `train`, and 37
+  cases split literal v1/v2 twins of the same question (same stem, only the
+  correct letter differs) across both sides. This is harmless for
+  `mix/valid.jsonl`'s actual role (SFT trainer loss monitoring, per
+  `mlx_lm.lora` convention) but means it must never be reused as a
+  held-out benchmark — that's exactly why `harness/iave_prompts.jsonl` is
+  a separate, sitting-disjoint file instead of a slice of `mix/valid.jsonl`.
 - **Page-footer bleed-through (found and fixed).** A manual spot-check
   turned up captured question text ending in things like `"Prova 501/1.ª
   F. • Página 12/ 15\n␌Teil C – Schreiben"` — the PDF's page footer plus
