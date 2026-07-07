@@ -1,0 +1,139 @@
+{
+  "subjects": {
+    "Portugues Lingua Segunda (138)": {
+      "mcq_found": 4,
+      "paired": 4,
+      "sittings": 4
+    },
+    "Alemao (501)": {
+      "mcq_found": 4,
+      "paired": 4,
+      "sittings": 4
+    },
+    "Frances (517)": {
+      "mcq_found": 0,
+      "paired": 0,
+      "sittings": 4
+    },
+    "Espanhol (547)": {
+      "mcq_found": 6,
+      "paired": 6,
+      "sittings": 4
+    },
+    "Ingles (550)": {
+      "mcq_found": 0,
+      "paired": 0,
+      "sittings": 5
+    },
+    "Historia A (623)": {
+      "mcq_found": 13,
+      "paired": 10,
+      "sittings": 5
+    },
+    "Matematica A (635)": {
+      "mcq_found": 24,
+      "paired": 24,
+      "sittings": 6
+    },
+    "Portugues (639)": {
+      "mcq_found": 28,
+      "paired": 28,
+      "sittings": 6
+    },
+    "Biologia e Geologia (702)": {
+      "mcq_found": 10,
+      "paired": 10,
+      "sittings": 6
+    },
+    "Desenho A (706)": {
+      "mcq_found": 0,
+      "paired": 0,
+      "sittings": 5
+    },
+    "Geometria Descritiva A (708)": {
+      "mcq_found": 0,
+      "paired": 0,
+      "sittings": 6
+    },
+    "Economia A (712)": {
+      "mcq_found": 56,
+      "paired": 54,
+      "sittings": 6
+    },
+    "Filosofia (714)": {
+      "mcq_found": 39,
+      "paired": 39,
+      "sittings": 6
+    },
+    "Fisica e Quimica A (715)": {
+      "mcq_found": 37,
+      "paired": 37,
+      "sittings": 6
+    },
+    "Geografia A (719)": {
+      "mcq_found": 8,
+      "paired": 8,
+      "sittings": 6
+    },
+    "Historia B (723)": {
+      "mcq_found": 14,
+      "paired": 12,
+      "sittings": 4
+    },
+    "Historia da Cultura e das Artes (724)": {
+      "mcq_found": 0,
+      "paired": 0,
+      "sittings": 3
+    },
+    "Latim A (732)": {
+      "mcq_found": 3,
+      "paired": 3,
+      "sittings": 3
+    },
+    "Literatura Portuguesa (734)": {
+      "mcq_found": 0,
+      "paired": 0,
+      "sittings": 4
+    },
+    "Matematica B (735)": {
+      "mcq_found": 0,
+      "paired": 0,
+      "sittings": 6
+    },
+    "Matematica Aplicada as Ciencias Sociais (835)": {
+      "mcq_found": 17,
+      "paired": 17,
+      "sittings": 6
+    },
+    "Portugues Lingua Nao Materna (839)": {
+      "mcq_found": 0,
+      "paired": 0,
+      "sittings": 4
+    },
+    "Espanhol (847) (847)": {
+      "mcq_found": 1,
+      "paired": 1,
+      "sittings": 5
+    },
+    "Mandarim (848)": {
+      "mcq_found": 2,
+      "paired": 2,
+      "sittings": 3
+    },
+    "Italiano (849)": {
+      "mcq_found": 6,
+      "paired": 6,
+      "sittings": 4
+    },
+    "Historia da Cultura das Artes (724)": {
+      "mcq_found": 0,
+      "paired": 0,
+      "sittings": 1
+    }
+  },
+  "totals": {
+    "mcq_found": 272,
+    "paired": 265,
+    "pair_yield": 0.974
+  }
+}
