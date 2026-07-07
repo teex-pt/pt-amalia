@@ -317,3 +317,33 @@ linked artifacts; this is the narrative thread.
   benchmarks and controls within 1–2 points.
 - Decontaminate against the consortium benchmarks (pt_exams, LegalBenchPT,
   alba, cultura_viva) before any dataset release.
+
+## 2026-07-07 (cont.) — New direction: domain specialists, starting with K-12
+
+- Discussed specializing rather than only fixing general behaviors — a K-12
+  tutor and a Portuguese-law model are the two candidates. Both fit the
+  project's core finding (small verified data beats generic volume) applied
+  to topics instead of behaviors. Recommended K-12 first: lower stakes,
+  faster validation loop, exam marking schemes give ground-truth-by-construction
+  the same way our arithmetic anchors do. Legal is the bigger opportunity but
+  needs a higher rigor bar (wrong legal info has real consequences) and has a
+  natural feeder once `leis-pt` (the separate desktop project) has real data.
+- **IAVE exam corpus collected**: verified `pt_exams`/PHEB's actual scope
+  first (checked the PROPOR paper directly rather than trust the plan's
+  vague caveat) — 2006-2023, six subjects only (Mathematics, Portuguese,
+  History, Geography, Biology/Geology, Philosophy). IAVE actually publishes
+  26 subjects across 3 sessions/year; used 2024-2025 to guarantee disjointness
+  by year alone, so all subjects are usable, not just the 20 the benchmark
+  never touches.
+- Found IAVE's real archive (`?ano=YYYY` filter, not JS-hidden as the static
+  homepage suggested) and confirmed live URLs for both years directly rather
+  than guessing a filename pattern (filenames carry inconsistent manual
+  suffixes — not programmatically predictable). 122 exam sittings, 244 PDFs
+  (exam + marking scheme pairs), respectful rate-limited download —
+  243/244 on the first pass, the one 404 was a transcription slip on my part
+  (hyphen/underscore mismatch), fixed and confirmed 244/244.
+  ([datagen/iave_registry.py](datagen/iave_registry.py),
+  [datagen/iave_download.py](datagen/iave_download.py))
+- Next: PDF text extraction into structured Q&A pairs (harder than the
+  download — math notation, multi-column layout, pairing exam questions
+  with their marking-scheme answers).
