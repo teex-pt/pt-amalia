@@ -246,6 +246,35 @@ linked artifacts; this is the narrative thread.
   (arithmetic, bare-format answers) rather than trying to fix it with a
   better-aligned draft model. Left uncommitted (dataset, adapter, fused
   model ~1.7GB, all logs) pending a decision on next steps.
+- Published anyway per this project's standing practice — negative/mixed
+  results get documented, not hidden (same as the honesty pilot's v1):
+  [teex-pt/EuroLLM-1.7B-AMALIA-draft-pilot](https://huggingface.co/teex-pt/EuroLLM-1.7B-AMALIA-draft-pilot).
+
+## 2026-07-07 (cont.) — Draft-tokens sweep resolves it: N=1 flips the verdict positive
+
+- Checked mlx_lm's actual default first: `num_draft_tokens=2`
+  (`generate.py:478`), not the 4–8 commonly assumed — so "tune it down" meant
+  testing the floor (N=1) up through N=12.
+  [scripts/sweep_draft_tokens.py](scripts/sweep_draft_tokens.py), new — 3
+  prompt types × 7 values of N, ~8 minutes.
+- **Monotonic result, no sweet-spot search needed: speedup strictly decreases
+  as N increases, for every prompt type.** At the default N=2, average was
+  0.89–0.98x (slowdown/neutral, matching earlier runs). At **N=1**: General
+  Physics 1.25x, Honesty 1.19x, Arithmetic 0.75x — **average 1.06x, a genuine
+  net speedup** for the first time in this track. By N=8-12 it craters to
+  ~0.43-0.56x average — clearly the wrong direction, confirming higher N
+  makes the overhead problem worse, not better.
+- Arithmetic still doesn't cross 1.0x even at the floor (0.75x) — consistent
+  with the earlier structural-overhead diagnosis: some fixed cost from
+  running two models can't be eliminated for a 3-5 token completion, only
+  minimized. N=1 is the best available mitigation via this parameter alone;
+  fully closing the gap would need conditionally skipping speculative
+  decoding for expected-short outputs.
+- **Verdict flip:** this track is now a net positive at the right
+  configuration (`--num-draft-tokens 1`), not the net-negative "don't ship
+  as configured" conclusion from a few hours earlier. Updated the published
+  HF model card to reflect the corrected recommendation rather than leaving
+  the superseded negative framing live.
 
 ## Standing decisions
 
