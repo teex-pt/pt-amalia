@@ -30,11 +30,13 @@ so far. A K-12 tutor in the full sense needs those too; see JOURNAL.md.
 2. `iave_extract.py` — parses MCQ items only for v1 (open-response items
    carry grading rubrics, not direct answers — a different, harder
    extraction problem). Handles three observed marking-scheme formats
-   (table, inline+letter, inline+"Versão 1/2"). **265/272 found MCQ items
-   paired with question text (97% yield).**
+   (table, inline+letter, inline+"Versão 1/2"). Strips page-footer/next-page
+   bleed-through ("Prova 501/1.ª F. • Página 12/ 15" + whatever follows the
+   page break) from captured question text. **270/272 found MCQ items
+   paired with question text (99% yield).**
 3. `iave_build_mix.py` — converts to the project's standard `messages`
    schema. Two-version exams (shuffled options) produce two records each.
-   **452 samples (407 train / 45 valid).**
+   **462 samples (416 train / 46 valid).**
 
 ## Known limitations
 
@@ -43,9 +45,19 @@ so far. A K-12 tutor in the full sense needs those too; see JOURNAL.md.
   confirmed by manual inspection, not by a content detector. Records from
   `Matematica A/B, Matematica Aplicada, Fisica e Quimica A, Geometria
   Descritiva A` carry `notation_risk: true` in `extracted.jsonl` (**115 of
-  452, 25%**) so they can be filtered or reviewed separately. Plain-number,
+  462, 25%**) so they can be filtered or reviewed separately. Plain-number,
   combinatorics, and geometry-by-figure items in these same subjects
   extract cleanly — the flag is a coarse per-subject signal, not per-item.
+- **Page-footer bleed-through (found and fixed).** A manual spot-check
+  turned up captured question text ending in things like `"Prova 501/1.ª
+  F. • Página 12/ 15\n␌Teil C – Schreiben"` — the PDF's page footer plus
+  whatever of the next page's header leaked across the page break, since
+  `pdftotext -layout` linearizes pages back-to-back. Affected 90/265
+  records (34%) before the fix. `iave_extract.py`'s `find_question_text()`
+  now strips everything from `"Prova " + <3-digit exam code>` onward
+  (verified: that exact token never appears as legitimate question prose).
+  Yield actually rose slightly after the fix (97% → 99%) since a few
+  records the footer had pushed over the 3000-char cap now parse cleanly.
 - **Item-numbering collisions.** Exams are organized in groups (GRUPO I/II/
   III, PARTE A/B/C) whose item numbering restarts, so the same number can
   refer to different items. Fixed by requiring at least two `(A)/(B)/...`

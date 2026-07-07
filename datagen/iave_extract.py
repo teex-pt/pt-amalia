@@ -86,6 +86,10 @@ def parse_cc(text):
 
 
 MCQ_OPTION_RE = re.compile(r"\([A-D]\)")
+# Page footer ("Prova 501/1.a F. - Pagina 12/ 15") plus whatever of the next
+# page's header bleeds in before the following item's number line - always
+# starts with "Prova " + a 3-digit exam code, never part of legitimate prose.
+FOOTER_RE = re.compile(r"\s*Prova\s+\d{3}.*", re.DOTALL)
 
 
 def find_question_text(exam_text, item_num):
@@ -106,7 +110,8 @@ def find_question_text(exam_text, item_num):
         rf"^\s*{re.escape(item_num)}\s+(.+?)(?=^\s*\d{{1,2}}\.\d?\.?\s|\Z)",
         re.MULTILINE | re.DOTALL)
     for m in pattern.finditer(exam_text):
-        q = re.sub(r"\n{2,}", "\n", m.group(1)).strip()
+        q = FOOTER_RE.sub("", m.group(1)).strip()
+        q = re.sub(r"\n{2,}", "\n", q).strip()
         if not (10 < len(q) < 3000):
             continue
         if len(MCQ_OPTION_RE.findall(q)) < 2:

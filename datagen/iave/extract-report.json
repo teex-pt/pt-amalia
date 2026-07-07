@@ -27,7 +27,7 @@
     },
     "Historia A (623)": {
       "mcq_found": 13,
-      "paired": 10,
+      "paired": 13,
       "sittings": 5
     },
     "Matematica A (635)": {
@@ -77,7 +77,7 @@
     },
     "Historia B (723)": {
       "mcq_found": 14,
-      "paired": 12,
+      "paired": 14,
       "sittings": 4
     },
     "Historia da Cultura e das Artes (724)": {
@@ -133,7 +133,7 @@
   },
   "totals": {
     "mcq_found": 272,
-    "paired": 265,
-    "pair_yield": 0.974
+    "paired": 270,
+    "pair_yield": 0.993
   }
 }
