@@ -389,3 +389,41 @@ linked artifacts; this is the narrative thread.
 - Open-response items (richer content — grading rubrics with model-answer
   descriptors) intentionally out of v1 scope; different extraction problem
   ([datagen/iave/README.md](datagen/iave/README.md)).
+
+## 2026-07-07 (cont.) — IAVE dataset published to HF, gated: a second real bug found while preparing the publish
+
+- User asked whether to push the IAVE corpus to HF, "complementary to the
+  one that already exists" (`amalia-pilot-honesty-v2`). Before assuming
+  Apache-2.0 the way that dataset is licensed, checked precedent: that
+  dataset is pure synthetic content (templates + on-policy + teacher
+  drafts), this one is real IAVE exam text, a different situation.
+  Checked how PHEB (LREC 2026, same source exams, same research team behind
+  AMALIA-9B) handles this — they redistribute raw question text on a public
+  GitHub repo with **no license file at all** and no IAVE attribution. Real
+  precedent that this is treated as normal practice in this research
+  community, but not the same as IAVE having granted redistribution rights.
+- **Spot-checking a sample record before writing the card caught a second
+  real bug**: PDF page footers ("Prova 501/1.ª F. • Página 12/ 15") plus
+  next-page header text were bleeding into 90/265 (34%) of captured
+  questions — `pdftotext -layout` linearizes pages back-to-back across the
+  page break. Not caught by the aggregate 97% yield number, only by reading
+  actual text. Fixed in `find_question_text()` (strip everything from
+  `"Prova " + <3-digit exam code>` onward — verified that token never
+  appears in legitimate question prose). **Yield rose 97% → 99%** (270/272
+  paired, a few footer-inflated records had been failing the length cap),
+  **462 clean training records** (416 train / 46 valid).
+- The permission classifier blocked the initial publish attempt (a public
+  HF dataset upload of content with unconfirmed redistribution rights,
+  triggered by a question rather than an explicit go-ahead) — correctly:
+  this was a genuine open call, not something to decide unilaterally.
+  Presented the PHEB precedent and the license framing to the user directly
+  and asked how they wanted to handle it (public / gated / hold off).
+  Chose **gated (manual review)**: same content and card as a full public
+  release, but HF's request-access flow adds a real accountability step
+  before this specific text reaches someone, without blocking legitimate
+  research use.
+- Published: [teex-pt/amalia-iave-exams-2024-2025](https://huggingface.co/datasets/teex-pt/amalia-iave-exams-2024-2025)
+  (`gated: manual`) — `extracted.jsonl`, `mix/{train,valid}.jsonl`,
+  `extract-report.json`, and a card that documents scope, the two bugs
+  found and fixed, `notation_risk`, and the license reasoning explicitly
+  rather than a blanket Apache-2.0 claim over content we didn't write.
