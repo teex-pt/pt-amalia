@@ -1,0 +1,27 @@
+{
+  "label": "lora-1.7b-distilled-ext",
+  "model": "eurollm-1.7b-mlx-8bit-distilled-fused",
+  "categories": {
+    "arithmetic": {
+      "passed": 5,
+      "total": 100,
+      "rate": 0.05
+    },
+    "format": {
+      "passed": 17,
+      "total": 30,
+      "rate": 0.567
+    },
+    "honesty": {
+      "passed": 50,
+      "total": 100,
+      "rate": 0.5
+    },
+    "variety": {
+      "passed": 17,
+      "total": 30,
+      "rate": 0.567
+    }
+  },
+  "overall": 0.342
+}

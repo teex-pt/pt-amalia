@@ -1,0 +1,27 @@
+{
+  "label": "baseline-1.7b-ext",
+  "model": "eurollm-1.7b-mlx-8bit",
+  "categories": {
+    "arithmetic": {
+      "passed": 1,
+      "total": 100,
+      "rate": 0.01
+    },
+    "format": {
+      "passed": 4,
+      "total": 30,
+      "rate": 0.133
+    },
+    "honesty": {
+      "passed": 1,
+      "total": 100,
+      "rate": 0.01
+    },
+    "variety": {
+      "passed": 14,
+      "total": 30,
+      "rate": 0.467
+    }
+  },
+  "overall": 0.077
+}

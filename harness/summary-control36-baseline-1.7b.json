@@ -1,0 +1,12 @@
+{
+  "label": "control36-baseline-1.7b",
+  "model": "eurollm-1.7b-mlx-8bit",
+  "categories": {
+    "honesty_control": {
+      "passed": 35,
+      "total": 36,
+      "rate": 0.972
+    }
+  },
+  "overall": 0.972
+}

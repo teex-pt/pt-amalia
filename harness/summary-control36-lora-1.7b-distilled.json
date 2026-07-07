@@ -1,0 +1,12 @@
+{
+  "label": "control36-lora-1.7b-distilled",
+  "model": "eurollm-1.7b-mlx-8bit-distilled-fused",
+  "categories": {
+    "honesty_control": {
+      "passed": 34,
+      "total": 36,
+      "rate": 0.944
+    }
+  },
+  "overall": 0.944
+}

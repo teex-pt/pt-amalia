@@ -23,6 +23,7 @@ eurollm-22b-mlx-4bit/
 datagen/out/
 datagen/merged/
 adapters/
-fused-v2/
 publish/
-fused*/
+*fused*/
+EuroLLM-1.7B-Instruct/
+eurollm-1.7b-mlx-8bit/
