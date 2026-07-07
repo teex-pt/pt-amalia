@@ -27,3 +27,4 @@ publish/
 *fused*/
 EuroLLM-1.7B-Instruct/
 eurollm-1.7b-mlx-8bit/
+datagen/iave/raw/
