@@ -347,3 +347,45 @@ linked artifacts; this is the narrative thread.
 - Next: PDF text extraction into structured Q&A pairs (harder than the
   download — math notation, multi-column layout, pairing exam questions
   with their marking-scheme answers).
+- Checked full K-12 scope while researching: what we built only covers
+  **Ensino Secundário (12th grade)**. Portugal's K-12 has two more IAVE
+  streams — 9th-grade finals (Provas Finais de Ciclo EB) and younger-grade
+  diagnostics (Provas de Aferição EB, genuinely JS-rendered, harder to
+  scrape) — both untouched. Real gap for a full K-12 tutor, deferred rather
+  than blocking on it: the secondary corpus alone was worth validating first.
+
+## 2026-07-07 (cont.) — IAVE extraction: 452 verified pairs, and a real bug caught
+
+- `pdftotext -layout` confirmed the PDFs are true digital text (not scanned)
+  — math notation still garbles under font-encoding quirks (confirmed by
+  reading a derivative-rules formula sheet), but that's a font-mapping
+  problem, not an OCR problem.
+- Marking schemes use **three different answer-key formats** across subjects
+  (a clean table for Filosofia; inline "item + dots + points" then a bare
+  letter for Matemática A; inline then "Versão 1 – (X); Versão 2 – (Y)" for
+  Física e Química A) — built pattern support for all three.
+- **First pass: 78% pairing yield, Filosofia only 28%** despite being the
+  cleanest test case. Root cause: marking-scheme tables zero-pad item
+  numbers ("01.") but exam text doesn't ("1.") — fixed, Filosofia jumped to
+  100%. A second bug (stray extra "." in some item-number lines) took
+  Física e Química A from 0% to 100%. Yield: 94%.
+- **Caught a real false positive during a spot-check**, not by luck —
+  reviewing random samples turned up a Português item where the extracted
+  "question" was open-response text but got labeled with a confident
+  (D)/(C) answer. Root cause: exams are organized in groups (GRUPO I/II/III)
+  with item numbering that *restarts per group*, so "item 4" can mean two
+  different things in one exam, and the first (wrong) occurrence was being
+  matched. Fixed with a safety gate (require 2+ lettered options in the
+  matched text) plus scanning *all* occurrences of a reused number instead
+  of stopping at the first — this is the "verify, don't assume" pattern
+  from every pilot applied to a parsing pipeline instead of a training run.
+  Final yield: **97%, 265 pairs**, expanded to **452 training samples**
+  (both shuffled-option exam versions counted) after the false positive
+  was fixed rather than just filtered out.
+- Flagged (not hidden) the 25% of records from notation-heavy STEM subjects
+  where math garbling is a known risk (`notation_risk` field) — plain-number
+  items in those same subjects extract cleanly, so it's a coarse per-subject
+  signal, not a per-item guarantee either way.
+- Open-response items (richer content — grading rubrics with model-answer
+  descriptors) intentionally out of v1 scope; different extraction problem
+  ([datagen/iave/README.md](datagen/iave/README.md)).
