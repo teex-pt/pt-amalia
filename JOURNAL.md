@@ -211,6 +211,42 @@ linked artifacts; this is the narrative thread.
 - Speculative decoding benchmark showed only 1.04x–1.06x speedups for general/refusal prompts, and a 0.43x slowdown (57% hit) for arithmetic.
 - **Key Takeaway:** Rule-alignment (SFT on SFT data) is insufficient for speculative speedups because speculative decoding requires exact token-by-token matching. A style/phrasing mismatch or wrong arithmetic outputs causes target model rejects, wasting the draft. Distillation (SFT directly on target model completions) is required to unlock the 2x–3x speedup.
 
+## 2026-07-07 (cont.) — Distillation completed: the 2x-3x hypothesis didn't hold
+
+- Filipe asked me to finish this track (it had stalled mid-distillation: 150/751
+  train rows generated, no adapter trained yet). Removed the hardcoded
+  `limit=150/30` in `datagen/distill_mix.py`, ran the full distillation
+  (AMALIA-9B greedy-decoded completions for all 819 `mix-v4` prompts, ~30 min),
+  trained `adapters/eurollm-1.7b-lora-v4-distilled` (same 200-iter recipe),
+  fused, evaluated, and ran the actual speculative-decoding benchmark
+  ([scripts/benchmark_speculative.py](scripts/benchmark_speculative.py), new).
+- **The distillation hypothesis was only partially confirmed.** Speedup by
+  prompt type: General Physics (long, explanatory) 1.05x → **1.26x** — a real
+  gain from distillation. But Arithmetic (bare, ~3-5 token answer) stayed at
+  **exactly 0.43x in both the pre- and post-distillation runs** — identical,
+  down to the decimal. Average speedup: **0.89x — a net slowdown**.
+- **Why:** the arithmetic case being unchanged by distillation is the
+  interesting result — it rules out "style/phrasing mismatch" as the cause for
+  that case specifically. Speculative decoding has fixed per-step overhead
+  (draft proposes tokens, target verifies in a batch); for a 3-5 token answer
+  there's no length left to amortize that overhead over, no matter how
+  perfectly aligned the draft model is. This is a structural limit, not a
+  training-quality problem — distillation helps where generations are long
+  enough to benefit, and can't help where they're inherently short.
+- Side finding: the distilled student scores *lower* on our own verifier
+  harness than the non-distilled version (honesty 50% vs 82%, overall 34.2%
+  vs 47.3%) — expected, since it's imitating AMALIA-9B's own imperfect
+  greedy answers (AMALIA's honesty rate is 82-96%, not 100%) rather than our
+  hand-verified targets. "Aligned to the target model" and "verifiably
+  correct" are different objectives and this experiment pulls them apart
+  cleanly.
+- **Recommendation for continuing this track:** don't pursue more training —
+  tune `--num-draft-tokens` down (less wasted overhead on short completions)
+  or conditionally skip speculative decoding for expected-short prompts
+  (arithmetic, bare-format answers) rather than trying to fix it with a
+  better-aligned draft model. Left uncommitted (dataset, adapter, fused
+  model ~1.7GB, all logs) pending a decision on next steps.
+
 ## Standing decisions
 
 - Every dataset sample is gated by deterministic code verifiers; ground truth
