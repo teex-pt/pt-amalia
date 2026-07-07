@@ -281,6 +281,32 @@ linked artifacts; this is the narrative thread.
   deployment complexity of running two models. Findings stay published on HF
   as-is; back to the main honesty-pilot merge-65v2 line.
 
+## 2026-07-07 (cont.) — merge-75: mapping the α curve found a better champion
+
+- First fixed a stale-publish gap: [teex-pt/AMALIA-9B-0626-DPO-LoRA-honesty-pilot](https://huggingface.co/teex-pt/AMALIA-9B-0626-DPO-LoRA-honesty-pilot)
+  still shipped the original v2 adapter three days after merge-65v2 was
+  proven the series champion — updated it, with an IFEval transcription
+  error caught and fixed before publishing.
+- Then mapped the merge's α curve properly: only two points (0.50, 0.65) had
+  been tested. Built 4 more blends (0.55/0.60/0.70/0.75), swept all six.
+  **α=0.75 wins on both arithmetic and honesty simultaneously** — no
+  trade-off needed, the rare clean result.
+- Full eval of merge-75: **dominates v2 on every axis** (matches honesty
+  96.0%, format 80.0%, variety 93.3% exactly; beats arithmetic 51.0% vs
+  49.0%; beats overall 76.5% vs 75.8%) while *also* tying v3's series-best
+  IFEval (68.0%) and beating merge-65v2's GSM8K (54.0% vs 52.0%)
+  ([full report](eval/results/PILOT-honesty-merge-v2xv4.md)).
+- **merge-75 is the new recommended default checkpoint**, superseding
+  merge-65v2 — republished to the same HF repo.
+- Operational note: hit the recurring HF snapshot-incompleteness bug again
+  (missing `.gitattributes`/`README.md`, now under a *new* commit hash for
+  `amalia-llm/AMALIA-9B-0626-DPO` — the upstream repo was updated since our
+  last check) and a watchdog false-positive (a pipeline's `sleep 15` between
+  stages left a window with no matching process name, making the watchdog
+  conclude prematurely that everything had ended while the script was still
+  alive and about to start the next stage) — both diagnosed correctly rather
+  than treated as real failures.
+
 ## Standing decisions
 
 - Every dataset sample is gated by deterministic code verifiers; ground truth

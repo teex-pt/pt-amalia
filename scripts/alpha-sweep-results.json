@@ -1,0 +1,44 @@
+[
+  {
+    "alpha": 0.5,
+    "label": "merge-50",
+    "arithmetic": 0.48,
+    "honesty": 0.9,
+    "eligible": true
+  },
+  {
+    "alpha": 0.55,
+    "label": "merge-55",
+    "arithmetic": 0.5,
+    "honesty": 0.9,
+    "eligible": true
+  },
+  {
+    "alpha": 0.6,
+    "label": "merge-60",
+    "arithmetic": 0.46,
+    "honesty": 0.9,
+    "eligible": true
+  },
+  {
+    "alpha": 0.65,
+    "label": "merge-65v2",
+    "arithmetic": 0.5,
+    "honesty": 0.9,
+    "eligible": true
+  },
+  {
+    "alpha": 0.7,
+    "label": "merge-70",
+    "arithmetic": 0.5,
+    "honesty": 0.94,
+    "eligible": true
+  },
+  {
+    "alpha": 0.75,
+    "label": "merge-75",
+    "arithmetic": 0.54,
+    "honesty": 0.94,
+    "eligible": true
+  }
+]

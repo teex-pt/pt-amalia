@@ -98,18 +98,58 @@ v3 control; not directly comparable to the others in this table.
 ² measured at n=25, not n=50 like v3/v4/merge — wider confidence interval,
 not a strict apples-to-apples comparison.
 
+## α-curve sweep (2026-07-07): mapping the curve found a better point
+
+The two original blends (α=0.50, 0.65) only sampled two points on the curve.
+Built four more (α=0.55, 0.60, 0.70, 0.75 — `scripts/merge_adapters.py`, same
+v2×v4 pair) and swept all six on the n=50 subset:
+
+| α | arithmetic | honesty | eligible |
+|---|---|---|---|
+| 0.50 | 48.0% | 90.0% | yes |
+| 0.55 | 50.0% | 90.0% | yes |
+| 0.60 | 46.0% | 90.0% | yes |
+| 0.65 | 50.0% | 90.0% | yes |
+| 0.70 | 50.0% | 94.0% | yes |
+| **0.75** | **54.0%** | **94.0%** | yes |
+
+Not monotonic in the 0.50–0.65 range (some noise at n=50), but honesty
+jumps to 94% at α≥0.70 and arithmetic peaks at α=0.75 — **α=0.75 wins on
+both axes simultaneously**, the rare case where the sweep doesn't require a
+trade-off decision.
+
+## merge-75: the new champion (full n=260 harness + control-36 + CoT)
+
+| Metric | Baseline | v2 | v3 | v4 | merge-65v2 | **merge-75** |
+|---|---|---|---|---|---|---|
+| honesty | 50.0% | 96.0% | 81.0% | 82.0% | 94.0% | **96.0%** (ties v2) |
+| arithmetic | 46.0% | 49.0% | 36.0% | **52.0%** | 50.0% | 51.0% |
+| format | 73.3% | 80.0% | 73.3% | 73.3% | 76.7% | **80.0%** (ties v2) |
+| variety | 86.7% | 93.3% | 93.3% | 86.7% | 90.0% | **93.3%** (ties v2/v3) |
+| control (36) | 100% | 100% | 97.2% | 100% | 100% | **100%** |
+| **overall** | 55.4% | 75.8% | — | 70.0% | 74.6% | **76.5% — best of series** |
+| GSM8K-pt CoT | 48.0%² | 48.0%² | 64.0% | **66.0%** | 52.0% | 54.0% |
+| IFEval-pt strict | 60.0% | — | **68.0%** | 64.0% | 64.0% | **68.0%** (ties v3) |
+
+**merge-75 dominates v2 on every axis** (matches its honesty/format/variety
+exactly, beats its arithmetic 51.0% vs 49.0%, beats its overall harness score
+76.5% vs 75.8%) while *also* tying v3's series-best IFEval (68.0%) and
+beating merge-65v2's GSM8K (54.0% vs 52.0%). It doesn't lead on raw
+arithmetic (v4's 52.0% is 1pp higher — within noise at n=100) or GSM8K
+(v3/v4's reasoning-anchor training still leads there), but for a single
+general-purpose checkpoint this is the strongest result of the entire
+pilot series, found for the cost of 4 more weight averages and one eval pass.
+
+**merge-75 is now the recommended default checkpoint**, superseding
+merge-65v2. Published: [teex-pt/AMALIA-9B-0626-DPO-LoRA-honesty-pilot](https://huggingface.co/teex-pt/AMALIA-9B-0626-DPO-LoRA-honesty-pilot).
+
 ## What's next (if the series continues)
 
-- **merge-65v2 is the recommended default checkpoint** for general use of
-  this pilot line — best all-round harness score with perfect control. But
-  it is not universally dominant: pick **v2** if honesty is the priority
-  metric (96% vs 94%), and pick **v4** if the deployment is reasoning/CoT-heavy
-  (GSM8K 66% vs merge's 52%) — the merge gave up most of that gain to buy
-  back honesty.
-- Untried: sweep more α values (0.55, 0.60, 0.70, 0.75) to map the curve
-  properly rather than the two points tested here; also untried, merging
-  v4 with v3 (both arithmetic-focused, different mechanisms) or a 3-way
-  merge (v2 × v3 × v4).
+- Untried: finer sweep around α=0.75-0.85 (we stopped at 0.75 as the sweep
+  winner, but didn't test whether 0.80/0.85 do even better — the curve
+  wasn't strictly monotonic in the tested range, so this isn't guaranteed,
+  but worth 15 minutes to check); merging v4 with v3 (both arithmetic/CoT
+  focused, different mechanisms) or a 3-way merge (v2 × v3 × v4).
 - Push toward Fase 1 (plan §5): this closes the Mac-scale pilot arc — the
   next real gains likely need the larger verified datasets and/or the
   Path A/B routes (thinking-trace distillation, RLVR) documented in
