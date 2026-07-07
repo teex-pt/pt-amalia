@@ -275,6 +275,11 @@ linked artifacts; this is the narrative thread.
   as configured" conclusion from a few hours earlier. Updated the published
   HF model card to reflect the corrected recommendation rather than leaving
   the superseded negative framing live.
+- **Closed, not pursued further:** Filipe's call — a 6% average speedup that
+  actively regresses arithmetic/format-style short completions (exactly the
+  categories the honesty-pilot line cares most about) isn't worth the
+  deployment complexity of running two models. Findings stay published on HF
+  as-is; back to the main honesty-pilot merge-65v2 line.
 
 ## Standing decisions
 
