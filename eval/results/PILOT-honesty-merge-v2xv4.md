@@ -58,25 +58,54 @@ in these adapters are not fully entangled in weight-space. A linear blend
 recovers most of both, which suggests the v1→v3 "trade-off" was more about
 *data mixture* composition than an intrinsic capability conflict.
 
-## Series summary (all pilots, extended n=100/30/36 harness)
+## CoT / instruction-following results (consortium AMALIA-Bench tasks)
 
-| Adapter | arithmetic | honesty | format | variety | control | overall | Note |
-|---|---|---|---|---|---|---|---|
-| baseline | 46.0% | 50.0% | 73.3% | 86.7% | 100% | 55.4% | no adapter |
-| v1 | — | — | — | — | 66.7%¹ | — | rejected (n=30 only; over-refusal) |
-| v2 | 49.0% | **96.0%** | **80.0%** | **93.3%** | 100% | **75.8%** | honesty specialist |
-| v3 | 36.0% | 81.0% | 73.3% | 93.3% | 97.2% | — | rejected; anchor-style ablation |
-| v4 | **52.0%** | 82.0% | 73.3% | 86.7% | 100% | 70.0% | arithmetic/CoT specialist (GSM8K 66%, IFEval 64%) |
-| **merge-65v2** | 50.0% | 94.0% | 76.7% | 90.0% | 100% | 74.6% | **best all-round** |
+Ran after the harness completion, to check whether the merge inherited any
+of v3/v4's chain-of-thought gains alongside v2's honesty. Same operational
+note as v4: **BF16-fused evals of this model crashed twice with real memory
+pressure** (system free memory down to 7% and 6%, not a Metal exception —
+tighter batch size and lower MLX limits didn't help). Quantizing the fused
+model to Q8 first (lossless per our own benchmarks) resolved it immediately
+and cleanly. Recorded here as a repeatable gremlin: **for GSM8K-CoT-length
+generation, always evaluate the Q8-fused copy, not BF16, on this Mac.**
+
+| Metric | Baseline | v2 | v3 | v4 | **merge-65v2** |
+|---|---|---|---|---|---|
+| GSM8K-pt CoT zeroshot (flexible) | 48.0% (n=25) | 48.0% (n=25) | 64.0% (n=50) | **66.0%** (n=50, Q8) | 52.0% (n=50, Q8) |
+| IFEval-pt strict (prompt-level) | 60.0% | — | **68.0%** | 64.0% | 64.0% |
+
+merge-65v2's GSM8K score (52%) sits much closer to v2's baseline-level 48%
+than to v3/v4's reasoning-anchor-boosted 64–66% — consistent with the 65/35
+weighting toward v2 in the blend: it inherited more of v2's character than
+v4's on this axis. IFEval, however, lands exactly at v4's 64%, unaffected by
+the α skew. Net read: the merge trades away most of v4's CoT gain to buy
+back v2's honesty — a reasonable price given the harness-level results above,
+but worth knowing before picking merge-65v2 for a CoT-heavy use case.
+
+## Series summary (all pilots, extended n=100/30/36 harness + CoT tasks)
+
+| Adapter | arithmetic | honesty | format | variety | control | overall | GSM8K-CoT | IFEval | Note |
+|---|---|---|---|---|---|---|---|---|---|
+| baseline | 46.0% | 50.0% | 73.3% | 86.7% | 100% | 55.4% | 48.0%² | 60.0% | no adapter |
+| v1 | — | — | — | — | 66.7%¹ | — | — | — | rejected (n=30 only; over-refusal) |
+| v2 | 49.0% | **96.0%** | **80.0%** | **93.3%** | 100% | **75.8%** | 48.0%² | — | honesty specialist |
+| v3 | 36.0% | 81.0% | 73.3% | 93.3% | 97.2% | — | 64.0% | **68.0%** | rejected; anchor-style ablation |
+| v4 | **52.0%** | 82.0% | 73.3% | 86.7% | 100% | 70.0% | **66.0%** | 64.0% | arithmetic/CoT specialist |
+| **merge-65v2** | 50.0% | 94.0% | 76.7% | 90.0% | 100% | 74.6% | 52.0% | 64.0% | **best all-round harness score** |
 
 ¹ v1's control was measured on the original 12-entity set, not the 36-entity
 v3 control; not directly comparable to the others in this table.
+² measured at n=25, not n=50 like v3/v4/merge — wider confidence interval,
+not a strict apples-to-apples comparison.
 
 ## What's next (if the series continues)
 
-- **merge-65v2 is the natural default checkpoint** for any downstream use of
-  this pilot line — recommend it over v2 or v4 individually unless a
-  deployment specifically needs the single best score on one axis.
+- **merge-65v2 is the recommended default checkpoint** for general use of
+  this pilot line — best all-round harness score with perfect control. But
+  it is not universally dominant: pick **v2** if honesty is the priority
+  metric (96% vs 94%), and pick **v4** if the deployment is reasoning/CoT-heavy
+  (GSM8K 66% vs merge's 52%) — the merge gave up most of that gain to buy
+  back honesty.
 - Untried: sweep more α values (0.55, 0.60, 0.70, 0.75) to map the curve
   properly rather than the two points tested here; also untried, merging
   v4 with v3 (both arithmetic-focused, different mechanisms) or a 3-way

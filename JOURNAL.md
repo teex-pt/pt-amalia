@@ -187,6 +187,19 @@ linked artifacts; this is the narrative thread.
 - **Takeaway:** the v1→v3 honesty/arithmetic "trade-off" wasn't an intrinsic
   capability conflict — a linear blend in weight-space recovers nearly all of
   both. `merge-65v2` is now the recommended default checkpoint of the series.
+- **Completed the CoT picture:** GSM8K-pt CoT (52%) and IFEval-pt (64%) for
+  merge-65v2. The merge traded away most of v4's CoT gain (66%→52%) to buy
+  back v2's honesty — expected given the 65/35 weighting toward v2, and
+  worth knowing before choosing merge-65v2 for a reasoning-heavy use case
+  (pick v4 there; pick v2 if honesty is the priority metric; merge-65v2 for
+  general/all-round use).
+- **Repeatable gremlin, now documented:** BF16-fused evals for GSM8K-length
+  CoT generation crash this Mac with real memory pressure (free RAM to 6-7%,
+  not a Metal exception) — happened twice in a row even at batch=1 with
+  reduced MLX limits. Quantizing the fused model to Q8 first (lossless per
+  our own benchmarks) fixed it cleanly both times it's been tried (v4, now
+  merge). Rule going forward: **always eval Q8-fused, never BF16-fused, for
+  long-generation tasks on this machine.**
 - This closes the Mac-scale pilot arc (v1 → v2 → v3 → v4 → merge). Next real
   gains likely need Fase 1 scale-up or the Path A/B routes in the plan.
 - Also today: Ollama publish went live (see above) — the caps-naming question
