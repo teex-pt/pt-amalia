@@ -1,0 +1,156 @@
+{
+  "baseline": {
+    "General Physics": 30.296,
+    "Honesty (Fake Entity)": 30.272,
+    "Arithmetic (Bare)": 39.465
+  },
+  "sweep": [
+    {
+      "n": 1,
+      "prompt": "General Physics",
+      "tps": 37.826,
+      "baseline_tps": 30.296,
+      "speedup": 1.2485476630578294
+    },
+    {
+      "n": 1,
+      "prompt": "Honesty (Fake Entity)",
+      "tps": 35.998,
+      "baseline_tps": 30.272,
+      "speedup": 1.1891516913319238
+    },
+    {
+      "n": 1,
+      "prompt": "Arithmetic (Bare)",
+      "tps": 29.679,
+      "baseline_tps": 39.465,
+      "speedup": 0.7520334473584187
+    },
+    {
+      "n": 2,
+      "prompt": "General Physics",
+      "tps": 35.352,
+      "baseline_tps": 30.296,
+      "speedup": 1.1668867177185107
+    },
+    {
+      "n": 2,
+      "prompt": "Honesty (Fake Entity)",
+      "tps": 35.541,
+      "baseline_tps": 30.272,
+      "speedup": 1.1740552325581395
+    },
+    {
+      "n": 2,
+      "prompt": "Arithmetic (Bare)",
+      "tps": 23.281,
+      "baseline_tps": 39.465,
+      "speedup": 0.5899151146585582
+    },
+    {
+      "n": 3,
+      "prompt": "General Physics",
+      "tps": 31.245,
+      "baseline_tps": 30.296,
+      "speedup": 1.0313242672299974
+    },
+    {
+      "n": 3,
+      "prompt": "Honesty (Fake Entity)",
+      "tps": 29.289,
+      "baseline_tps": 30.272,
+      "speedup": 0.9675277484143764
+    },
+    {
+      "n": 3,
+      "prompt": "Arithmetic (Bare)",
+      "tps": 17.125,
+      "baseline_tps": 39.465,
+      "speedup": 0.4339287976688204
+    },
+    {
+      "n": 4,
+      "prompt": "General Physics",
+      "tps": 27.837,
+      "baseline_tps": 30.296,
+      "speedup": 0.9188341695273303
+    },
+    {
+      "n": 4,
+      "prompt": "Honesty (Fake Entity)",
+      "tps": 26.734,
+      "baseline_tps": 30.272,
+      "speedup": 0.8831263213530657
+    },
+    {
+      "n": 4,
+      "prompt": "Arithmetic (Bare)",
+      "tps": 14.606,
+      "baseline_tps": 39.465,
+      "speedup": 0.3701000886861776
+    },
+    {
+      "n": 6,
+      "prompt": "General Physics",
+      "tps": 22.102,
+      "baseline_tps": 30.296,
+      "speedup": 0.7295352521785055
+    },
+    {
+      "n": 6,
+      "prompt": "Honesty (Fake Entity)",
+      "tps": 20.765,
+      "baseline_tps": 30.272,
+      "speedup": 0.6859474101479915
+    },
+    {
+      "n": 6,
+      "prompt": "Arithmetic (Bare)",
+      "tps": 10.616,
+      "baseline_tps": 39.465,
+      "speedup": 0.26899784619282907
+    },
+    {
+      "n": 8,
+      "prompt": "General Physics",
+      "tps": 17.396,
+      "baseline_tps": 30.296,
+      "speedup": 0.5742012146818062
+    },
+    {
+      "n": 8,
+      "prompt": "Honesty (Fake Entity)",
+      "tps": 15.908,
+      "baseline_tps": 30.272,
+      "speedup": 0.5255021141649049
+    },
+    {
+      "n": 8,
+      "prompt": "Arithmetic (Bare)",
+      "tps": 7.34,
+      "baseline_tps": 39.465,
+      "speedup": 0.18598758393513237
+    },
+    {
+      "n": 12,
+      "prompt": "General Physics",
+      "tps": 17.057,
+      "baseline_tps": 30.296,
+      "speedup": 0.5630116186955373
+    },
+    {
+      "n": 12,
+      "prompt": "Honesty (Fake Entity)",
+      "tps": 16.658,
+      "baseline_tps": 30.272,
+      "speedup": 0.5502774841437633
+    },
+    {
+      "n": 12,
+      "prompt": "Arithmetic (Bare)",
+      "tps": 7.993,
+      "baseline_tps": 39.465,
+      "speedup": 0.20253389078930698
+    }
+  ]
+}
