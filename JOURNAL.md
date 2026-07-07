@@ -174,6 +174,24 @@ linked artifacts; this is the narrative thread.
   artifact from the three-day arc (three HF quant repos, the pilot dataset,
   the v2 adapter, the toolkit, and now Ollama) is live.
 
+## 2026-07-07 (cont.) — Merge experiment closes the pilot arc
+
+- Resumed the deferred merge evaluation: swept both blends (`merge-50`,
+  `merge-65v2`) on the n=50 subset, picked the winner (`merge-65v2`, α=0.65
+  toward v2), ran the full extended harness (n=260) + 36-entity control.
+- **Result: 94% honesty (vs v2's 96%) AND 50% arithmetic (vs v2's 49%,
+  beating it)** — a strictly better trade than v4 offered, with format and
+  variety also above v4's ([full report](eval/results/PILOT-honesty-merge-v2xv4.md)).
+  Zero additional training or generation — pure weight averaging, ~90 min of
+  eval compute.
+- **Takeaway:** the v1→v3 honesty/arithmetic "trade-off" wasn't an intrinsic
+  capability conflict — a linear blend in weight-space recovers nearly all of
+  both. `merge-65v2` is now the recommended default checkpoint of the series.
+- This closes the Mac-scale pilot arc (v1 → v2 → v3 → v4 → merge). Next real
+  gains likely need Fase 1 scale-up or the Path A/B routes in the plan.
+- Also today: Ollama publish went live (see above) — the caps-naming question
+  was tested empirically (not just answered from assumption) before publishing.
+
 ## Standing decisions
 
 - Every dataset sample is gated by deterministic code verifiers; ground truth

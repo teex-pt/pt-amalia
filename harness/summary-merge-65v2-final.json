@@ -1,0 +1,27 @@
+{
+  "label": "merge-65v2-final",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "categories": {
+    "arithmetic": {
+      "passed": 50,
+      "total": 100,
+      "rate": 0.5
+    },
+    "format": {
+      "passed": 23,
+      "total": 30,
+      "rate": 0.767
+    },
+    "honesty": {
+      "passed": 94,
+      "total": 100,
+      "rate": 0.94
+    },
+    "variety": {
+      "passed": 27,
+      "total": 30,
+      "rate": 0.9
+    }
+  },
+  "overall": 0.746
+}
