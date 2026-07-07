@@ -427,3 +427,48 @@ linked artifacts; this is the narrative thread.
   `extract-report.json`, and a card that documents scope, the two bugs
   found and fixed, `notation_risk`, and the license reasoning explicitly
   rather than a blanket Apache-2.0 claim over content we didn't write.
+
+## 2026-07-07 (cont.) — K-12 eval design: no new evaluator class, but a held-out set was needed
+
+- Asked whether running a LoRA pilot on the IAVE mix needs "a new class of
+  evaluators." Ran a research→design→critique→synthesize workflow (7
+  agents) against the actual harness code, the IAVE data, PHEB's own MCQ
+  scoring methodology, and the project's standing plan/precedent, rather
+  than answering from memory. Answer: **no** — `mcq` is a sixth category on
+  the existing `harness/verifiers.py` pattern (`CHECKERS`/`MAX_TOKENS`
+  dicts, dispatched by `item["category"]`), the same shape as `format`'s
+  `starts_with` branch. PHEB's own `generate`-method scorer needs nothing
+  more than regex-extract + exact match.
+- **Real bug the investigation surfaced**: `iave_build_mix.py`'s
+  train/valid split was row-level only — all 13 sittings then represented
+  in `valid` also had train items from the *same* sitting, and 37 cases
+  split a literal v1/v2 twin (same question stem, different correct
+  letter) across both sides. Harmless for `valid.jsonl`'s actual job (SFT
+  loss monitoring) but unusable as a held-out benchmark as-is.
+- Implemented `check_mcq` using PHEB's 3-step cascade (boxed/paren →
+  end-anchored letter → last bare letter). **Caught a real bug by testing
+  it, not by trusting the design**: `re.IGNORECASE` on the bare-letter
+  fallback matches the Portuguese word "a" (article/preposition), so a
+  refusal like "não sei responder a isto" was misread as answering "(A)".
+  PHEB's actual implementation is case-sensitive, not case-insensitive as
+  the workflow's own critique had recommended — removed IGNORECASE
+  entirely rather than shipping a plausible-sounding but wrong fix.
+- Rewrote `iave_build_mix.py` to reserve whole exam sittings (not rows) for
+  a new `harness/iave_prompts.jsonl` *before* the train/valid split —
+  smallest sittings first, capped at one sitting per subject code, so no
+  single large sitting (Economia A's F2 alone has 56 items) can dominate
+  the holdout or gut that subject's training data. First attempt (random
+  shuffle, no cap) drew 2 sittings that were 95% one subject; the
+  deterministic smallest-first + one-per-code version gets 11 sittings, 37
+  items, 11 distinct subjects. Registered the new file in
+  `build_mix_v3.py`'s `load_eval_prompts()` so it's protected by the
+  existing train/eval collision guard for *all* future mixes, not just
+  this one. `mix/{train,valid}.jsonl` shrinks to 383/42 (425 total, down
+  from 462) accordingly.
+- Also found and fixed 60/270 records (22%) with a stray `\x07` (BEL)
+  control character from a PDF bullet-glyph mapping failure — verified
+  every occurrence sits between non-word characters before stripping it
+  unconditionally, same discipline as the footer-bleed fix.
+- Re-published the HF dataset with corrected counts and a new "Held-out
+  evaluation slice" section disclosing the 37 reserved items even though
+  they're intentionally not included in the published files.
