@@ -1,4 +1,4 @@
-FROM ./gguf/AMALIA-9B-0626-DPO-Q4_K_M.gguf
+FROM ../gguf/AMALIA-9B-0626-DPO-Q4_K_M.gguf
 
 TEMPLATE """{{ if .System }}<|im_start|>system
 {{ .System }}<|im_end|>
