@@ -1,0 +1,27 @@
+{
+  "label": "iave-v1-ext",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "categories": {
+    "arithmetic": {
+      "passed": 42,
+      "total": 100,
+      "rate": 0.42
+    },
+    "format": {
+      "passed": 20,
+      "total": 30,
+      "rate": 0.667
+    },
+    "honesty": {
+      "passed": 60,
+      "total": 100,
+      "rate": 0.6
+    },
+    "variety": {
+      "passed": 25,
+      "total": 30,
+      "rate": 0.833
+    }
+  },
+  "overall": 0.565
+}

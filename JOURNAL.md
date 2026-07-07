@@ -472,3 +472,65 @@ linked artifacts; this is the narrative thread.
 - Re-published the HF dataset with corrected counts and a new "Held-out
   evaluation slice" section disclosing the 37 reserved items even though
   they're intentionally not included in the published files.
+
+## 2026-07-07 (cont.) — iave-v1 LoRA pilot: REJECTED, and why it matters
+
+- Ran the full pilot: `mlx_lm.lora` on the 383-sample IAVE mix (200 iters,
+  same recipe as honesty-v4 — rank 8, 16 layers, batch 2, lr 1e-5), then the
+  full harness (ext + control36 + the new `mcq` set) on baseline vs. adapter.
+  **Verdict: rejected.** `mcq` (the actual target) moved **0.0pp** (11/37 →
+  11/37), while arithmetic (−4.0pp), format (−6.6pp), variety (−3.4pp), and
+  control (−2.8pp) all regressed past the 1-2pp acceptance tolerance. Full
+  writeup: [eval/results/PILOT-iave-v1.md](eval/results/PILOT-iave-v1.md).
+- Verified the adapter was actually being applied before concluding
+  anything (28/29 mcq responses changed text vs. baseline) — this was a
+  real trained effect, not a load-path bug. The model clearly learned the
+  output *format* (`"(X)"` exactly matching training targets) without
+  learning to answer more items correctly.
+- **Same failure mode as honesty-v1** (2026-07-04): single-vector SFT with
+  zero diversity anchors. The IAVE mix is 100% MCQ, identical prompt
+  template on every one of 383 samples — enough uniformity for a 9B model
+  to latch onto "answer tersely with one bracketed letter" as a dominant
+  pattern, which then leaked into arithmetic/format/variety, none of which
+  want that style. honesty-v1→v2 already proved the fix (mix in anchors);
+  this pilot didn't do that on purpose, to isolate whether the IAVE corpus
+  alone moves the needle. It doesn't, at this scale.
+- Promoting this to a standing pipeline rule rather than a one-off lesson:
+  **never train a LoRA on a single homogeneous sample type** — always mix
+  in anchors from other categories, even for a narrow specialization pilot.
+- Cheap experiment (~10 min total train+eval), so the negative result cost
+  little and taught a lot: reinforces the RAG-over-fine-tuning lean already
+  reached independently while scoping leis-pt's objective #3 the same day.
+
+## 2026-07-07 (cont.) — leis-pt F0: source-verification blocker found before writing any scraper
+
+- Asked to launch leis-pt (Portuguese legal corpus project, spec-only until
+  now) on the new `lw-lab1` SSH host (WSL2, RTX 4060ti) so it runs in
+  parallel with pt-amalia work on the Mac. Set up key-based SSH access
+  (`~/.ssh/lw-lab1`, `UseKeychain`, matching the existing `ubr-gcs`/
+  `google_compute_engine` pattern) and confirmed CUDA is reachable from
+  Python (`torch.cuda.is_available() == True`) even though `nvidia-smi`
+  isn't on WSL's default PATH.
+- Updated `leis-pt/PLANO.md` with three sequenced objectives (training
+  corpus → vector search/MCP server SaaS → specialized model), reasoning
+  from the iave-v1 result above: legal Q&A has higher hallucination stakes
+  than exam MCQs, so a RAG-first model (calls the retrieval layer) is
+  probably the right shape, not a parametric model that memorized the law.
+- Before writing a scraper, verified the plan's two source claims directly
+  rather than trusting the "✅ confirmado" notes in the spec:
+  - `files.diariodarepublica.pt/1s/{year}/{month}/{issue}/{pages}.pdf` —
+    **confirmed real and valuable**: found live example URLs, downloaded
+    one, and its header already contains série/issue/date/órgão emissor/
+    diploma title *and* the official `Sumário:` — meaning `amalia-sum-dre`
+    needs no separate metadata source at all.
+  - `diariodarepublica.pt/dr/legislacao-consolidada/` (the amendment-graph
+    source, the plan's most-valuable-asset claim) — **blocked**: it's a
+    fully client-rendered OutSystems React SPA (empty server HTML, `<div
+    id="reactContainer">`). No JSON API found after checking robots.txt/
+    sitemap, scanning the SPA's JS bundle, and searching dados.gov.pt/INCM
+    open-data docs. The "✅ confirmado" in the original plan was almost
+    certainly a human eyeballing it in a browser, not something a plain
+    HTTP scraper can reach.
+  - Left open for the user to pick: add headless-browser tooling to capture
+    the SPA's real XHR calls, scope F0 down to the (working) PDF stream
+    only, or try arquivo.pt's archive API as an indirect route.

@@ -1,0 +1,12 @@
+{
+  "label": "iave-v1-mcq",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "categories": {
+    "mcq": {
+      "passed": 11,
+      "total": 37,
+      "rate": 0.297
+    }
+  },
+  "overall": 0.297
+}

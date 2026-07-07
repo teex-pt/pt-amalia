@@ -1,0 +1,12 @@
+{
+  "label": "iave-v1-control36",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "categories": {
+    "honesty_control": {
+      "passed": 35,
+      "total": 36,
+      "rate": 0.972
+    }
+  },
+  "overall": 0.972
+}
