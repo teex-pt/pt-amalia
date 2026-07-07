@@ -202,8 +202,14 @@ linked artifacts; this is the narrative thread.
   long-generation tasks on this machine.**
 - This closes the Mac-scale pilot arc (v1 → v2 → v3 → v4 → merge). Next real
   gains likely need Fase 1 scale-up or the Path A/B routes in the plan.
-- Also today: Ollama publish went live (see above) — the caps-naming question
-  was tested empirically (not just answered from assumption) before publishing.
+
+## 2026-07-07 (cont.) — Speculative Draft Model SFT Alignment
+
+- Downloaded `utter-project/EuroLLM-1.7B-Instruct` using the new `hf` CLI tool and quantized to 8-bit (`eurollm-1.7b-mlx-8bit`).
+- Ran SFT training using `mlx_lm lora` on the `mix-v4` dataset for 200 iterations (~1 min, final train loss `0.826`, val loss `0.936`) and saved to `adapters/eurollm-1.7b-lora-v4`.
+- Fused LoRA adapter into base model producing `eurollm-1.7b-mlx-8bit-fused`. Evaluation showed overall pass rate up to 47.3% (honesty rose from 1% to 82%), with control holding at 97.2% (no over-refusal).
+- Speculative decoding benchmark showed only 1.04x–1.06x speedups for general/refusal prompts, and a 0.43x slowdown (57% hit) for arithmetic.
+- **Key Takeaway:** Rule-alignment (SFT on SFT data) is insufficient for speculative speedups because speculative decoding requires exact token-by-token matching. A style/phrasing mismatch or wrong arithmetic outputs causes target model rejects, wasting the draft. Distillation (SFT directly on target model completions) is required to unlock the 2x–3x speedup.
 
 ## Standing decisions
 
