@@ -534,3 +534,47 @@ linked artifacts; this is the narrative thread.
   - Left open for the user to pick: add headless-browser tooling to capture
     the SPA's real XHR calls, scope F0 down to the (working) PDF stream
     only, or try arquivo.pt's archive API as an indirect route.
+
+## 2026-07-08 — iave-v2: anchor-mixing fix validated (mostly), matches honesty-v1→v2
+
+- While the leis-pt consolidada crawl ran unattended on `lw-lab1` (see
+  below), ran the fix `PILOT-iave-v1.md` prescribed: mix diversity anchors
+  into the IAVE training data, replicating the honesty-v1→v2 correction
+  exactly. New mix (`datagen/build_iave_v2_mix.py`): all 383 IAVE samples +
+  250 randomly-sampled anchors from `mix-v4/train.jsonl` (already a
+  validated diverse mix), ~60/40 target/anchor ratio matching honesty-v2's
+  recipe. Zero collisions with any harness eval file, verified.
+- **The target metric actually moved this time**: `mcq` 29.7% → 35.1%
+  (+5.4pp vs baseline), where v1 had been exactly flat at 0.0pp. Verified
+  the diagnosis, not just the hypothesis — a homogeneous single-template
+  mix really was the problem. `arithmetic` flipped from a −4.0pp regression
+  to a genuine +2.0pp improvement. `honesty` improved more plausibly
+  (+3.0pp) than v1's suspicious, never-fully-explained +10pp jump.
+- **Still not a clean acceptance-rule pass**: `format` (−3.3pp) and
+  `variety` (−3.4pp) remain outside the 1-2pp tolerance vs. baseline, and
+  `honesty_control` sits right at the edge (−2.8pp, one item out of 36).
+  Full writeup: [eval/results/PILOT-iave-v2.md](eval/results/PILOT-iave-v2.md).
+- **Caught my own mistake mid-eval**: launched the `iave-v2-ext` harness run
+  while `iave-v2-control36` was still loading the model, without thinking
+  about it - system free memory dropped to 4%, the exact crash pattern
+  already documented in this journal for BF16-fused evals. Killed the
+  second process (`kill -9`, plain `kill` didn't land first try) before it
+  crashed anything, then ran the two sequentially as this project's
+  established practice already dictates. No excuse for not following the
+  project's own documented rule the first time.
+- Real, direct precedent for the "not clean but improved" verdict:
+  honesty-v2 itself wasn't a clean first-try pass either - it was ruled
+  "borderline-pass pending a wider eval set" back on 2026-07-04 and only
+  matured through v3/v4. iave-v2 is following the same shape, not failing
+  in a new way.
+- Leading hypothesis for why format/variety didn't recover: the 250 anchors
+  were sampled uniformly at random from mix-v4, with no per-category
+  balancing - if that draw under-represented format/variety examples
+  relative to arithmetic/honesty, that would explain the asymmetric
+  recovery. Next iteration (if pursued) should stratify the anchor sample
+  by category explicitly instead of leaving it to chance.
+- Standing pipeline rule reinforced (see IAVE section above): never train a
+  LoRA on a single homogeneous sample type. Two independent confirmations
+  now (honesty-v1, iave-v1) that this specific mistake produces the exact
+  same failure signature - narrow style collapse leaking into unrelated
+  categories - regardless of domain.
