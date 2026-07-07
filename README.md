@@ -10,6 +10,8 @@ We published the first Apple Silicon (MLX) and cross-platform (GGUF) builds of t
 | [teex-pt/AMALIA-9B-0626-DPO-MLX-4bit](https://huggingface.co/teex-pt/AMALIA-9B-0626-DPO-MLX-4bit) | MLX 4-bit (4.8 GB) | Macs — fastest, 55+ tok/s |
 | [teex-pt/AMALIA-9B-0626-DPO-GGUF](https://huggingface.co/teex-pt/AMALIA-9B-0626-DPO-GGUF) | GGUF Q4_K_M + Q8_0 | everyone — Ollama, LM Studio, llama.cpp, any OS/GPU |
 
+Also published directly on Ollama — [ollama.com/teex/amalia](https://ollama.com/teex/amalia) (`q4_K_M`, `q8_0`, `latest`): `ollama run teex/amalia`.
+
 ## Findings (summary)
 
 Measured on an Apple M5 Pro 48 GB (mlx-lm 0.31.3, llama.cpp b9850), greedy decoding, fixed pt-PT prompts:

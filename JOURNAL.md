@@ -156,6 +156,24 @@ linked artifacts; this is the narrative thread.
 - **Status: blends built, evaluations deferred** (Filipe's call — machine
   needed elsewhere). Resume is one command; ~1h45 of background compute.
 
+## 2026-07-07 — Ollama publish goes live
+
+- Network finally cooperated (20 MB/s up, vs the ~1 KB/s that forced the pause
+  on 2026-07-04). Pushed all three tags for real:
+  [ollama.com/teex/amalia](https://ollama.com/teex/amalia) (`q4_K_M`, `q8_0`,
+  `latest`) — confirmed live via both the website and the raw registry API
+  (`registry.ollama.ai/v2/teex/amalia/manifests/*` → 200 on all three).
+- **Naming resolved:** considered matching HF's capitalized `AMALIA-9B-...`
+  repo name on Ollama too, but tested first — mixed-case ollama.com/library
+  URLs 303-redirect to lowercase (`DeepSeek-R1` → `deepseek-r1`), and macOS's
+  case-insensitive filesystem collided a local `teex/AMALIA` alias into the
+  existing `teex/amalia` folder. Ollama's registry (Docker/OCI-style) treats
+  names as lowercase-only, unlike HF's case-sensitive repos — so `teex/AMALIA`
+  isn't a distinct identity there. Kept lowercase `teex/amalia`.
+- This closes the very last open item from the Day 2 publishing push — every
+  artifact from the three-day arc (three HF quant repos, the pilot dataset,
+  the v2 adapter, the toolkit, and now Ollama) is live.
+
 ## Standing decisions
 
 - Every dataset sample is gated by deterministic code verifiers; ground truth
