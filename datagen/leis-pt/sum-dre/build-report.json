@@ -1,0 +1,8 @@
+{
+  "n_total": 1006,
+  "n_train": 956,
+  "n_valid": 50,
+  "max_chars_cap": 32000,
+  "skipped_too_long": 721,
+  "skipped_too_short_or_empty": 0
+}

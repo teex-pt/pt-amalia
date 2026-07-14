@@ -1,0 +1,17 @@
+{
+  "label": "compare-sonnet5",
+  "model": "claude-sonnet-5",
+  "categories": {
+    "legal_cita": {
+      "passed": 9,
+      "total": 50,
+      "rate": 0.18
+    },
+    "legal_refusal": {
+      "passed": 10,
+      "total": 10,
+      "rate": 1.0
+    }
+  },
+  "overall": 0.317
+}

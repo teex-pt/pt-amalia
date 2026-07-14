@@ -1,0 +1,36 @@
+{
+  "n_pt_exams_items": 1819,
+  "n_pt_exams_subjects": 6,
+  "n_our_rows_checked": 9614,
+  "shingle_size": 13,
+  "n_contaminated_rows": 2,
+  "max_shingles_matched_single_row": 3,
+  "hits": [
+    {
+      "source": "cita-legal/train",
+      "id": "176519653",
+      "n_shingles_matched": 3,
+      "example_shingle": "estratégia para o aumento da competitividade da rede de portos comerciais do continente",
+      "bench_items": [
+        [
+          "Geography",
+          2019,
+          "5"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "176519653",
+      "n_shingles_matched": 3,
+      "example_shingle": "para o aumento da competitividade da rede de portos comerciais do continente horizonte",
+      "bench_items": [
+        [
+          "Geography",
+          2019,
+          "5"
+        ]
+      ]
+    }
+  ]
+}

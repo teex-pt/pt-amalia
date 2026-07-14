@@ -1,0 +1,27 @@
+{
+  "label": "legal-v2-lora-ext",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "categories": {
+    "arithmetic": {
+      "passed": 58,
+      "total": 100,
+      "rate": 0.58
+    },
+    "format": {
+      "passed": 24,
+      "total": 30,
+      "rate": 0.8
+    },
+    "honesty": {
+      "passed": 68,
+      "total": 100,
+      "rate": 0.68
+    },
+    "variety": {
+      "passed": 26,
+      "total": 30,
+      "rate": 0.867
+    }
+  },
+  "overall": 0.677
+}

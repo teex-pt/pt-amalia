@@ -1,0 +1,13 @@
+{
+  "n_events": 52947,
+  "n_unresolved": 2164,
+  "n_no_sumario": 1,
+  "n_diplomas_with_groups": 1673,
+  "n_positive_total": 7538,
+  "n_negative_total": 1130,
+  "n_train": 8222,
+  "n_valid": 446,
+  "n_examples_capped_at_max_fragments": 1574,
+  "max_fragments_per_example": 6,
+  "negative_ratio_target": 0.15
+}

@@ -4,5 +4,9 @@ mlx-lm>=0.31
 # Evaluation: AMALIA-Bench tasks via lm-evaluation-harness (see eval/)
 lm-eval>=0.4.12
 
+# Evaluation: harness comparisons against non-local API models (see harness/run_harness_anthropic.py)
+anthropic>=0.116
+python-dotenv>=1.2
+
 # Development
 pytest>=8

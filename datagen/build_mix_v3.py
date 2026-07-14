@@ -158,7 +158,7 @@ def load_eval_prompts(here):
     eval_prompts = set()
     for fname in ("prompts.jsonl", "prompts-extended.jsonl",
                   "control_prompts.jsonl", "control_prompts_v3.jsonl",
-                  "iave_prompts.jsonl"):
+                  "iave_prompts.jsonl", "legal_cita_prompts.jsonl"):
         fp = here.parent / "harness" / fname
         if fp.exists():
             eval_prompts |= {json.loads(l)["prompt"] for l in open(fp)}

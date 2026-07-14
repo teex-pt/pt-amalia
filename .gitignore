@@ -5,6 +5,9 @@ gguf/
 gguf-src/
 *.gguf
 
+# secrets
+.env
+
 # tooling clones & envs
 .venv/
 llama.cpp/
@@ -28,3 +31,10 @@ publish/
 EuroLLM-1.7B-Instruct/
 eurollm-1.7b-mlx-8bit/
 datagen/iave/raw/
+datagen/leis-pt/corpus.jsonl
+
+# reads leis-pt's private internal file layout/schema directly - stays
+# out of the public repo, see JOURNAL.md 2026-07-14
+datagen/leis_pt_extract.py
+datagen/leis_pt_build_sum.py
+datagen/leis_pt_build_cita.py

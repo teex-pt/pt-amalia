@@ -1,0 +1,1327 @@
+{
+  "n_legalbenchpt_items": 4723,
+  "n_legalbenchpt_domains": 31,
+  "n_our_rows_checked": 9614,
+  "shingle_size": 13,
+  "n_contaminated_rows": 53,
+  "hits": [
+    {
+      "source": "cita-legal/train",
+      "id": "34570075",
+      "n_shingles_matched": 3,
+      "example_shingle": "que não deve ser aplicada em concreto pena de prisão superior a 5",
+      "bench_items": [
+        [
+          "Direito Processual Penal",
+          "24030902"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34529775",
+      "n_shingles_matched": 8,
+      "example_shingle": "com pena de prisão até 2 anos ou pena de multa até 240",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "1009146689",
+      "n_shingles_matched": 1,
+      "example_shingle": "por acordo escrito pode ser isento de horário de trabalho o trabalhador que",
+      "bench_items": [
+        [
+          "Direito do Trabalho",
+          "23020801"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020802"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020803"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020804"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020805"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34574575",
+      "n_shingles_matched": 2,
+      "example_shingle": "dias se pena mais grave lhe não couber por força de outra disposição",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 7,
+      "example_shingle": "dias se pena mais grave lhe não couber por força de outra disposição",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "67040495",
+      "n_shingles_matched": 15,
+      "example_shingle": "defeituoso dos deveres que lhe sejam impostos por lei por regulamento ou pelos",
+      "bench_items": [
+        [
+          "Direito dos Valores Mobiliários",
+          "04030114"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 7,
+      "example_shingle": "dias se pena mais grave lhe não couber por força de outra disposição",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "66689638",
+      "n_shingles_matched": 7,
+      "example_shingle": "da comparticipação nacional nos recursos próprios comunitários e da aplicação dos recursos financeiros",
+      "bench_items": [
+        [
+          "Direito das Finanças Públicas",
+          "25021201"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021202"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021203"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021204"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34569075",
+      "n_shingles_matched": 4,
+      "example_shingle": "com pena de prisão até 2 anos ou pena de multa até 240",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 12,
+      "example_shingle": "dias se pena mais grave lhe não couber por força de outra disposição",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34529075",
+      "n_shingles_matched": 1,
+      "example_shingle": "requerer a declaração da sua insolvência dentro dos 30 dias seguintes à data",
+      "bench_items": [
+        [
+          "Direito da Insolvência",
+          "06030309"
+        ],
+        [
+          "Direito da Insolvência",
+          "06030310"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "67040495",
+      "n_shingles_matched": 15,
+      "example_shingle": "defeituoso dos deveres que lhe sejam impostos por lei por regulamento ou pelos",
+      "bench_items": [
+        [
+          "Direito dos Valores Mobiliários",
+          "04030114"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34520775",
+      "n_shingles_matched": 67,
+      "example_shingle": "despesas públicas e de julgamento das contas que a lei mandar submeter lhe",
+      "bench_items": [
+        [
+          "Direito das Finanças Públicas",
+          "25021001"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021002"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021003"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021004"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021005"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34570075",
+      "n_shingles_matched": 3,
+      "example_shingle": "que não deve ser aplicada em concreto pena de prisão superior a 5",
+      "bench_items": [
+        [
+          "Direito Processual Penal",
+          "24030902"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34570075",
+      "n_shingles_matched": 17,
+      "example_shingle": "a audiência apresenta querendo a contestação acompanhada do rol de testemunhas é aplicável",
+      "bench_items": [
+        [
+          "Direito Processual Penal",
+          "24030701"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030702"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030703"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030704"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030705"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34570075",
+      "n_shingles_matched": 17,
+      "example_shingle": "testemunhas é aplicável o disposto no n º 14 do artigo 113 º",
+      "bench_items": [
+        [
+          "Direito Processual Penal",
+          "24030701"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030702"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030703"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030704"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030705"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 3,
+      "example_shingle": "dias se pena mais grave lhe não couber por força de outra disposição",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "1009146689",
+      "n_shingles_matched": 1,
+      "example_shingle": "por acordo escrito pode ser isento de horário de trabalho o trabalhador que",
+      "bench_items": [
+        [
+          "Direito do Trabalho",
+          "23020801"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020802"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020803"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020804"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020805"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34529775",
+      "n_shingles_matched": 8,
+      "example_shingle": "com pena de prisão até 2 anos ou pena de multa até 240",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34546475",
+      "n_shingles_matched": 1,
+      "example_shingle": "por acordo escrito pode ser isento de horário de trabalho o trabalhador que",
+      "bench_items": [
+        [
+          "Direito do Trabalho",
+          "23020801"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020802"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020803"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020804"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020805"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34570075",
+      "n_shingles_matched": 1,
+      "example_shingle": "entender que não deve ser aplicada em concreto pena de prisão superior a",
+      "bench_items": [
+        [
+          "Direito Processual Penal",
+          "24030902"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 7,
+      "example_shingle": "dias se pena mais grave lhe não couber por força de outra disposição",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34575175",
+      "n_shingles_matched": 10,
+      "example_shingle": "valores mobiliários por herança ou legado desde que os estatutos da sociedade prevejam",
+      "bench_items": [
+        [
+          "Direito dos Valores Mobiliários",
+          "04010108"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "67051321",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34575175",
+      "n_shingles_matched": 11,
+      "example_shingle": "das respectivas funções ou em seu nome ou por sua conta pelos titulares",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01020701"
+        ],
+        [
+          "Direito Penal",
+          "01020702"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34570075",
+      "n_shingles_matched": 17,
+      "example_shingle": "testemunhas é aplicável o disposto no n º 14 do artigo 113 º",
+      "bench_items": [
+        [
+          "Direito Processual Penal",
+          "24030701"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030702"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030703"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030704"
+        ],
+        [
+          "Direito Processual Penal",
+          "24030705"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "105756679",
+      "n_shingles_matched": 5,
+      "example_shingle": "se no prazo de 50 dias após a data da sua admissão pela",
+      "bench_items": [
+        [
+          "Direito das Finanças Públicas",
+          "25021201"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021202"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021203"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021204"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 7,
+      "example_shingle": "dias se pena mais grave lhe não couber por força de outra disposição",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34492375",
+      "n_shingles_matched": 2,
+      "example_shingle": "dias se pena mais grave lhe não couber por força de outra disposição",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34546475",
+      "n_shingles_matched": 3,
+      "example_shingle": "de adoção de menor de 15 anos o candidato a adotante tem direito",
+      "bench_items": [
+        [
+          "Direito do Trabalho",
+          "23020701"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020702"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020703"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020704"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020705"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34567875",
+      "n_shingles_matched": 17,
+      "example_shingle": "de consulta das entidades cujos pareceres autorizações ou aprovações sejam legalmente exigíveis bem",
+      "bench_items": [
+        [
+          "Direito Administrativo",
+          "18030201"
+        ],
+        [
+          "Direito Administrativo",
+          "18030202"
+        ],
+        [
+          "Direito Administrativo",
+          "18030203"
+        ],
+        [
+          "Direito Administrativo",
+          "18030204"
+        ],
+        [
+          "Direito Administrativo",
+          "18030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34437675",
+      "n_shingles_matched": 3,
+      "example_shingle": "dias se pena mais grave lhe não couber por força de outra disposição",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "66689638",
+      "n_shingles_matched": 7,
+      "example_shingle": "da comparticipação nacional nos recursos próprios comunitários e da aplicação dos recursos financeiros",
+      "bench_items": [
+        [
+          "Direito das Finanças Públicas",
+          "25021201"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021202"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021203"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021204"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021205"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "66689638",
+      "n_shingles_matched": 2,
+      "example_shingle": "dar parecer sobre a conta geral do estado incluindo a da segurança social",
+      "bench_items": [
+        [
+          "Direito das Finanças Públicas",
+          "25021001"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021002"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021003"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021004"
+        ],
+        [
+          "Direito das Finanças Públicas",
+          "25021005"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34575175",
+      "n_shingles_matched": 10,
+      "example_shingle": "valores mobiliários por herança ou legado desde que os estatutos da sociedade prevejam",
+      "bench_items": [
+        [
+          "Direito dos Valores Mobiliários",
+          "04010108"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/train",
+      "id": "34570075",
+      "n_shingles_matched": 3,
+      "example_shingle": "que não deve ser aplicada em concreto pena de prisão superior a 5",
+      "bench_items": [
+        [
+          "Direito Processual Penal",
+          "24030902"
+        ]
+      ]
+    },
+    {
+      "source": "sum-dre/train",
+      "id": "67051321",
+      "n_shingles_matched": 1,
+      "example_shingle": "se pena mais grave lhe não couber por força de outra disposição legal",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "sum-dre/train",
+      "id": "182491268",
+      "n_shingles_matched": 4,
+      "example_shingle": "operador de rede confirme a existência de condições técnicas para a ligação à",
+      "bench_items": [
+        [
+          "Direito da Energia",
+          "02010202"
+        ]
+      ]
+    },
+    {
+      "source": "sum-dre/train",
+      "id": "108114717",
+      "n_shingles_matched": 2,
+      "example_shingle": "durante o período de um ano a contar da data de entrada em",
+      "bench_items": [
+        [
+          "Direito do Trabalho",
+          "23020301"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020302"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020303"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020304"
+        ],
+        [
+          "Direito do Trabalho",
+          "23020305"
+        ]
+      ]
+    },
+    {
+      "source": "cita-legal/valid",
+      "id": "34526875",
+      "n_shingles_matched": 1,
+      "example_shingle": "pena de prisão até 1 ano ou pena de multa até 120 dias",
+      "bench_items": [
+        [
+          "Direito Penal",
+          "01030201"
+        ],
+        [
+          "Direito Penal",
+          "01030202"
+        ],
+        [
+          "Direito Penal",
+          "01030203"
+        ],
+        [
+          "Direito Penal",
+          "01030204"
+        ],
+        [
+          "Direito Penal",
+          "01030205"
+        ]
+      ]
+    },
+    {
+      "source": "sum-dre/valid",
+      "id": "66485846",
+      "n_shingles_matched": 21,
+      "example_shingle": "desenvolvimento e a gestão do sistema de reconhecimento validação e certificação de competências",
+      "bench_items": [
+        [
+          "Direito Administrativo",
+          "18030301"
+        ],
+        [
+          "Direito Administrativo",
+          "18030302"
+        ],
+        [
+          "Direito Administrativo",
+          "18030303"
+        ],
+        [
+          "Direito Administrativo",
+          "18030304"
+        ],
+        [
+          "Direito Administrativo",
+          "18030305"
+        ]
+      ]
+    }
+  ],
+  "max_shingles_matched_single_row": 67,
+  "note": "High hit count with low per-row overlap (mostly 1-8 shingles, scattered across many different bench items per phrase) is the expected signature of shared real statute text, not leaked test items - manually verified, see eval/results/DECONTAMINATION-legalbenchpt.md."
+}

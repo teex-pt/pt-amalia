@@ -578,3 +578,311 @@ linked artifacts; this is the narrative thread.
   now (honesty-v1, iave-v1) that this specific mistake produces the exact
   same failure signature - narrow style collapse leaking into unrelated
   categories - regardless of domain.
+
+## 2026-07-10 — leis-pt objective 1 (training corpus) shipped: RAG-first, not closed-book QA
+
+- Turned leis-pt's consolidated-legislation corpus into three HF datasets
+  under `teex-pt`, gated (manual approval) and CC0-1.0 (official PT legal
+  text is copyright-exempt by statute, a cleaner license situation than
+  IAVE's `license: other` workaround needed):
+  [leis-pt-consolidada](https://huggingface.co/datasets/teex-pt/leis-pt-consolidada)
+  (base corpus, 1,727 diplomas),
+  [amalia-sum-dre](https://huggingface.co/datasets/teex-pt/amalia-sum-dre)
+  (diploma → official-summary SFT pairs, 1,006 diplomas),
+  [amalia-cita-legal](https://huggingface.co/datasets/teex-pt/amalia-cita-legal)
+  (grounded-citation-or-refusal SFT pairs, 8,668 examples). Each card
+  documents its own scope, counts, and limitations.
+- **Deliberately did not build closed-book legal QA.** leis-pt's own
+  `PLANO.md` already argues the legal domain should be RAG-first
+  (hallucination costs more than in an exam), and this project's own IAVE
+  pilots are the empirical version of the same lesson - `iave-v1` flat at
+  0.0pp on the mcq target, `iave-v2`'s fix only reached +5.4pp and still
+  didn't clear the acceptance bar (see 2026-07-08 above). `amalia-cita-legal`
+  trains grounded-answer-or-refuse instead of memorized recall, on purpose,
+  and its refusal behavior is deliberately consistent with leis-pt's own
+  production RAG service rather than invented independently. Confirmed
+  this framing with Filipe via two `AskUserQuestion` rounds rather than
+  assuming it.
+- Gating is for access-tracking only here, not licensing uncertainty (that
+  was IAVE's situation, not this one) - confirmed explicitly with Filipe.
+- Extraction ran read-only against `~/Development/teex/leis-pt` per explicit
+  instruction not to touch that repo; build scripts live in
+  `pt-amalia/datagen/` but the extraction approach itself isn't detailed
+  here or in the dataset cards, by request.
+- Not yet done: decontamination against `LegalBenchPT` (the project's
+  standing rule before any benchmark-reported training run), and the
+  `datagen/` build outputs aren't committed to git yet - left for a
+  separate ask.
+
+## 2026-07-13 — legal-v1 LoRA pilot: RAG-first citation format lands, +66pp on target
+
+- First actual training run on the leis-pt-derived datasets. Mix: legal
+  citation + refusal examples, a slice of the summarization set, and
+  general-purpose anchors (~60/40 target/anchor, the same anti-collapse
+  ratio honesty-v2/iave-v2 established). New deterministic harness
+  category (`legal_cita`/`legal_refusal`) added alongside `mcq` - same
+  exact-match philosophy, no LLM judging.
+- **Target metric: 16.0% → 82.0% (+66.0pp).** Baseline failures were
+  almost all "extracted the right content but never used the citation
+  tag" - confirmed this was a trainable format gap, not a grounding gap,
+  before spending the training run on it. `legal_refusal` held at ceiling
+  (100%→100%).
+- Three secondary categories landed outside the project's strict
+  1-2pp acceptance tolerance (`variety` -3.4pp, `honesty_control` -2.8pp,
+  `mcq` -2.7pp) - each is a single flipped item, low power, but real.
+  Verdict: BETTER, borderline-pass, the same shape as `iave-v2`'s own
+  verdict, not a clean accept.
+- **Ran `merge-75` (the current general-purpose champion) on the same new
+  categories for comparison, which corrected one of my own conclusions
+  before it went stale in the report:** I'd initially read the `mcq` dip
+  as legal/exam cross-domain interference. `merge-75` - zero legal or exam
+  training in its lineage - shows the identical -2.7pp, so that's generic
+  adapter drift at this sample size, not something specific to legal-v1.
+  `variety` is the real specific regression (`merge-75` +6.6pp on the same
+  category legal-v1 -3.4pp) - likely the unstratified `mix-v4` anchor
+  sampling, the same gap `iave-v2`'s own report flagged and never fixed.
+  `legal_refusal` flipped the other way: `merge-75` (-10.0pp) is worse
+  there than legal-v1 (0.0pp) - its dedicated refusal training helps
+  exactly where the general-purpose checkpoint has no exposure.
+- Two real infrastructure bugs hit and fixed along the way (now in
+  project memory): `mlx_lm lora`'s training path has no memory ceiling
+  unlike the harness's inference path, and OOM'd once on a config that
+  looked safe on paper; and `transformers`' `apply_chat_template` can
+  return a `BatchEncoding`, which fails an `isinstance(x, dict)` check and
+  silently breaks any length-guard built on it.
+- Published `adapters/legal-v1` to HF as `teex-pt/AMALIA-9B-0626-DPO-LoRA-legal-v1`,
+  framed explicitly as a research pilot (not production-ready), same
+  spirit as the honesty-pilot adapter release.
+- Full report with the complete comparison table: `eval/results/PILOT-legal-v1.md`.
+
+## 2026-07-13 (cont.) — legal-v2: same recipe, ~2x data, target climbs to 94% and variety fully recovers
+
+- Considered merging `legal-v1` with `merge-75` to fix the `variety`
+  regression, but decided to try more data first - cheaper to validate
+  and doesn't foreclose the merge idea later. Checked `mix-v4`'s actual
+  composition first: it has no distinct "variety" slice to stratify
+  anchors by (variety looks like an emergent property of the data being
+  pt-PT throughout, not a dedicated category) - the anchor-stratification
+  fix proposed in the `legal-v1` report was murkier than first thought, so
+  this run is data volume only, same anchor approach as `legal-v1`.
+- Scaled the mix ~2x (700 grounded + 100 refusal + 400 sum-dre + 751
+  anchors - the full `mix-v4` pool, up from 400 - vs. `legal-v1`'s
+  350+50+200+400), 1,000 iters (~2x, same proportional-scaling precedent
+  as `iave-v1`→`v2`). Same validated-safe recipe (batch 1, max-seq-length
+  4096, grad-checkpoint) - peak memory landed at the same ~27.1GB as
+  `legal-v1`, as expected since per-step memory doesn't depend on dataset
+  size.
+- **Target kept climbing with more data**: `legal_cita` 82.0%→94.0%
+  (+12.0pp over `legal-v1`, +78.0pp over baseline). `legal_refusal` held
+  at ceiling again.
+- **`variety` fully recovered (83.3%→86.7%, ties baseline) without the
+  stratification fix** - turned out `legal-v1` just used 400 of the 751
+  available `mix-v4` anchors; using the full pool alone closed the gap.
+  Simpler explanation than under-representation-by-category: it was
+  under-sampling, not bad sampling.
+- `honesty_control` and `mcq` landed at the exact same rate as `legal-v1`
+  (0.0pp difference both ways) - reinforces they're low-power noise
+  (1 flipped item each), not something more data should be expected to
+  move. `honesty` regressed vs. `legal-v1` (78.0%→68.0%, -10.0pp) while
+  still well above baseline (+18.0pp) - logged as a real but unexplained
+  wobble, not investigated further this round.
+- Only two categories remain outside strict 1-2pp tolerance
+  (`honesty_control` -2.8pp, `mcq` -2.7pp), both already diagnosed as
+  low-power noise via the `merge-75` comparison - closer to a clean
+  accept than `legal-v1` or `iave-v2` ever reached.
+- Full report: `eval/results/PILOT-legal-v2.md`.
+
+## 2026-07-14 — legal-v2: external model comparison, then LegalBenchPT decontamination
+
+- Compared `legal-v2` against general-purpose models on the same
+  `legal_cita`/`legal_refusal` benchmark, zero-shot: Ministral-3-14B-Reasoning
+  (22.0%), Mistral-Small-3.2-24B (4.0%, worse despite 2.5x the parameters),
+  Claude Sonnet 5 (18.0%). None close to `legal-v2`'s 94.0%; model size
+  doesn't predict this behavior at all.
+- Built `harness/run_harness_anthropic.py` (Anthropic Messages API,
+  `.env`/`python-dotenv` for the key, same `CHECKERS`/schema as
+  `run_harness.py` for a directly comparable result) to also test a
+  few-shot condition on Sonnet 5: the real leis-pt production system
+  prompt (sent with explicit authorization - it's private-repo content,
+  the auto-mode classifier correctly caught the first attempt without it)
+  plus one training-set worked example. Result barely moved (18.0%→22.0%),
+  but *why* is the actually useful finding: the `[F#]` tag syntax got
+  picked up almost immediately (31→3 "no tag" failures), replaced by a
+  much bigger new failure - refusals on genuinely grounded questions
+  jumped from 10 to 36 of 50. Instruction + one demonstration teaches
+  syntax, not calibration; that's what the LoRA's diverse positive/
+  negative training examples are actually buying. All published to
+  `teex-pt/AMALIA-9B-0626-DPO-LoRA-legal-v2`'s card, including two real
+  pt-PT example responses.
+- Then ran this project's long-deferred decontamination check against
+  `LegalBenchPT` (`BeatrizCanaverde/LegalBench.PT`, already vendored
+  locally under `amalia-lm-eval/`) - the standing rule from
+  `PLANO-MELHORIA-AMALIA.md`, never done since `amalia-cita-legal`/
+  `amalia-sum-dre` were first built. 13-word shingle overlap check
+  (`datagen/decontaminate_legalbenchpt.py`) flagged 53/9,614 rows -
+  every one individually verified as benign shared real-statute text
+  (mostly short boilerplate phrases hitting many unrelated bench items at
+  once; one 67-shingle outlier traced exactly to Artigo 214.º CRP,
+  quoted verbatim on both sides of a constitutional-revision training
+  example and independently in LegalBenchPT's public-finance questions).
+  No fictional exam content ever appears in the training data. Verdict:
+  clean. Full report: `eval/results/DECONTAMINATION-legalbenchpt.md`.
+- Followed up immediately with `pt_exams` (`amalia-llm/pt_exams`, aka
+  PHEB, 1,819 K-12 exam MCQs across 6 subjects) - same method
+  (`datagen/decontaminate_pt_exams.py`, reusing the shingle utilities).
+  Domain mismatch made near-zero overlap the expectation, confirmed not
+  assumed: only 2/9,614 rows flagged, both the same training row matching
+  the same bench item via two overlapping shingle windows of one shared
+  phrase - traced to Resolução do Conselho de Ministros n.º 175/2017 (a
+  real port-strategy policy), independently referenced by its official
+  title in a 2019 Geography exam question. Verdict: clean. Full report:
+  `eval/results/DECONTAMINATION-pt_exams.md`. Closes out `pt_exams`/
+  `LegalBenchPT` for `amalia-cita-legal`/`amalia-sum-dre`; `alba` and
+  `cultura_viva` (the other two consortium benchmarks) not yet checked -
+  lower priority given even less topical overlap than `pt_exams` had.
+
+## 2026-07-14 (cont.) — RAG integration test: real retrieval via lexbase.pt, the missing piece
+
+- Every legal-domain eval so far tested citation behavior against a fixed
+  synthetic excerpt set. This is the first test of the actual gap flagged
+  after `legal-v2` shipped: real retrieval, real naturally-phrased
+  questions, through the live production index rather than the offline
+  harness.
+- Filipe stood up `lexbase.pt` (leis-pt's production MCP retrieval
+  service, public HTTP endpoint, 8 tools - 6 native
+  `search_legislation`/`get_diploma`/`get_fragment`/`get_article`/
+  `get_amendments`/`list_themes` plus a `search`/`fetch` pair for the
+  OpenAI connector contract). Deliberately no generation/"answer" tool -
+  retrieval only, by design, to avoid the liability of an embedded model
+  giving legal advice. Registered via `claude mcp add`, but a brand-new
+  MCP server added mid-session doesn't get picked up by an already-running
+  session's tool registry - built a proper client instead
+  (`harness/lexbase_client.py`, official `mcp` SDK, key in `.env`) rather
+  than wait on a restart, since a reusable script is more valuable than a
+  one-off manual tool call anyway.
+- `harness/rag_integration_test.py` bridges retrieval to generation: calls
+  `search_legislation`, formats real hits into the same `PERGUNTA:`/
+  `EXCERTOS:` shape the SFT data uses, runs it through a local model. 10
+  new, naturally-phrased questions (`harness/rag_test_queries.jsonl`),
+  including one deliberately off-topic (a pastry recipe) to test refusal
+  generalization somewhere training never touched.
+- **Citation tag usage: baseline 1/10 real queries, `legal-v2` 9/10** -
+  same diagnosis as the offline harness, now confirmed on genuinely new
+  questions through the live index.
+- **The off-topic query is the standout finding.** Both models correctly
+  noticed the retrieved excerpts (gambling/bingo licensing, agricultural
+  policy - genuinely irrelevant) didn't cover pastry recipes. Baseline
+  said so, then answered the recipe anyway from general knowledge - real
+  scope creep. `legal-v2` refused, in wording it was never trained on
+  ("Consulte uma fonte dedicada à gastronomia portuguesa" vs. the trained
+  template's "Consulte diretamente as fontes indicadas") - adapting the
+  refusal *pattern* to a genuinely novel case, not reciting a memorized
+  string. Stronger evidence of real calibration than the offline harness
+  could show, since its refusal examples share a construction process
+  with the training data.
+- Also surfaced a real architectural fact, not specific to either model:
+  retrieval never returned zero hits, even for the pastry question (still
+  6 "closest" semantic matches). `lexbase.pt`'s empty-retrieval refusal
+  shortcut essentially never fires in practice - the model's own judgment
+  carries almost the entire relevance-calibration burden, which is
+  exactly what this pilot was built to teach.
+- Zero hallucinated citations across all of `legal-v2`'s real responses
+  (checked programmatically: every `[F#]` used fell within the actual
+  retrieved-hit range). One cosmetic-only artifact logged: some answers to
+  plain questions still open with the training template's amendment-
+  announcement framing even when the question isn't about an amendment -
+  not a correctness issue, worth smoothing in a future iteration.
+- Known gap: this test's prompt format doesn't include the breadcrumb
+  `lexbase.pt`'s actual production prompt appends after the
+  citation - tested the SFT training shape on purpose, not the exact
+  production one yet. Full writeup: `eval/results/RAG-INTEGRATION-TEST.md`.
+
+## 2026-07-14 (cont.) — RAG integration test closes both remaining gaps: production format + external models
+
+- **Production prompt format tested** (`build_prompt(..., include_breadcrumb=True)`,
+  matching `lexbase.pt`'s real shape): behaviorally equivalent to the
+  training-shape run, 8/10 vs 9/10 strict-tag grounding, refusal held.
+  The one delta is cosmetic - one response cited via unbracketed "F1"/"F2"
+  markdown headers instead of `[F#]`, still correctly grounded, just
+  invisible to a strict regex checker. Real minor robustness gap, not a
+  behavioral regression.
+- **Ran the same 10 real queries through every external model** (Ministral,
+  Mistral-Small, Sonnet 5 via new `harness/rag_integration_test_anthropic.py`)
+  for the full picture: tag usage baseline 1/10, Ministral 4/10,
+  Mistral-Small 1/10, Sonnet 5 7/10, legal-v2 8-9/10.
+- **This meaningfully nuances the earlier off-topic finding, honestly.**
+  Sonnet 5 - which only scored 18-22% on the offline synthetic benchmark -
+  correctly refuses the pastel-de-nata query here, zero-shot, no legal
+  training. Question *style* matters a lot for a general model's zero-shot
+  behavior: plain natural questions are closer to a general assistant's
+  training distribution than the offline benchmark's amendment-summary
+  phrasing. So the real, still-standing claim isn't "only legal-v2 can
+  refuse correctly" (Sonnet 5 can too) - it's that legal-v2 matches or
+  exceeds a frontier commercial model's grounding behavior on a small,
+  9B, fully local model. Ministral and Mistral-Small (open-weight,
+  similar/larger size) both still scope-creep into giving the recipe -
+  Ministral's reasoning trace even states outright *"devo basear-me no
+  meu conhecimento prévio"* - so this isn't just "any big/aligned model
+  gets this right" either.
+- Caught my own automated-check false positive before it went in the
+  report: a naive keyword scan flagged Sonnet 5 as "gave the recipe"
+  because its refusal used the word "ingredientes" while explaining what
+  was *missing*. Manually read all six off-topic responses directly
+  instead of trusting the heuristic - the discipline this project's
+  journal keeps applying (verify before reporting, not just the numbers)
+  caught it before publishing the wrong table.
+- Full updated writeup: `eval/results/RAG-INTEGRATION-TEST.md`.
+
+## 2026-07-14 (cont.) — RAG test: manual correctness review finds a real retrieval-vs-faithfulness tension
+
+- Every check so far was format (citation tags) or calibration (refusal)
+  - never whether the grounded answers are actually *right*. Manually
+  read all 9 grounded queries' responses against the excerpts they cite
+  (no gold answers exist for these natural queries, so this is
+  faithfulness-to-source, not an independent legal review). 7/9 clean
+  across every model.
+- **The two exceptions are the real finding.** Q1 ("posso ser despedido
+  por faltar sem justificação?") is a genuine cross-model disagreement -
+  but it traces to retrieval missing CT Art. 351.º (the actual justa
+  causa article), not to a model being wrong. `legal-v2`/baseline stayed
+  strictly inside the (incomplete) shown text and said "não, a menos
+  que..."; Sonnet 5/Mistral-Small filled the gap from background
+  knowledge and said "sim, se grave/reiterada" - which matches the real
+  law more completely but wasn't actually grounded in what they were
+  shown. Real, worth-naming tension: strict grounding-faithfulness (this
+  whole pilot's design goal) loses to correctness exactly when retrieval
+  fails, and that's a limitation of the approach, not a bug to silently
+  patch over.
+- Q6 (pregnant-worker dismissal) looked like the same kind of split but
+  wasn't - retrieval succeeded there, and "não, a menos que" vs. "sim,
+  mas apenas" turned out to be two faithful readings of the same
+  conditional-permission article, not a factual disagreement.
+- Also caught a real but narrow generation-quality glitch: `legal-v2`'s
+  Q4 answer opens with a garbled, repetitive sentence before recovering
+  and citing correctly - cosmetic, unrelated to grounding, worth
+  watching in a future iteration.
+- Updated `eval/results/RAG-INTEGRATION-TEST.md` with the full review.
+
+## 2026-07-14 (cont.) — Root-caused the Q1 retrieval gap: chunk dilution, not vocabulary
+
+- Diagnosed directly against the live `lexbase.pt` service rather than
+  guess. Three probe queries, escalating specificity: natural phrasing
+  (fails), literal statutory phrasing "faltas não justificadas ao
+  trabalho" (still fails), near-verbatim quote of the actual buried
+  clause (still fails, doesn't even place in top 6). A direct quote of
+  the source failing to retrieve its own source rules out vocabulary/
+  phrasing gaps conclusively.
+- `get_article` confirms CT Art. 351.º is correctly indexed - the real
+  issue is that it's one long single-fragment article ("Noção de justa
+  causa de despedimento") enumerating 13 lettered grounds, of which
+  "faltas não justificadas" is just one (alínea g). Chunk-level dilution:
+  the whole-article embedding represents "justa causa in general," so it
+  loses to smaller single-topic "tipos de faltas" chunks whenever a query
+  targets one specific enumerated ground.
+- Gave concrete, priority-ordered feedback for the retrieval team:
+  sub-chunk long enumerated articles at the alínea level (highest
+  leverage, addresses root cause); treat this as a pattern to scan for,
+  not a one-off patch (grounds/types/exemptions articles are common in
+  PT statutory law); a weaker interim rerank-boost mitigation; and a
+  ready-made regression test (the three probe queries + expected result)
+  to verify any fix. Full diagnosis: `eval/results/RAG-INTEGRATION-TEST.md`.

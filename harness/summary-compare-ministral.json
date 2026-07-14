@@ -1,0 +1,17 @@
+{
+  "label": "compare-ministral",
+  "model": "mlx-community/Ministral-3-14B-Reasoning-2512-4bit",
+  "categories": {
+    "legal_cita": {
+      "passed": 11,
+      "total": 50,
+      "rate": 0.22
+    },
+    "legal_refusal": {
+      "passed": 10,
+      "total": 10,
+      "rate": 1.0
+    }
+  },
+  "overall": 0.35
+}

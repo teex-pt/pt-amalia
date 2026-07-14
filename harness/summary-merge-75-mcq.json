@@ -1,0 +1,12 @@
+{
+  "label": "merge-75-mcq",
+  "model": "amalia-llm/AMALIA-9B-0626-DPO",
+  "categories": {
+    "mcq": {
+      "passed": 10,
+      "total": 37,
+      "rate": 0.27
+    }
+  },
+  "overall": 0.27
+}
