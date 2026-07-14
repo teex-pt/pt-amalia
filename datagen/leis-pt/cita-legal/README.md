@@ -98,15 +98,15 @@ rather than reinvented.
 - **`valid.jsonl` is for SFT trainer loss monitoring**, not a retrieval or
   QA benchmark — leis-pt's own hand-validated benchmark work ("Stage B")
   is tracked separately in that project, not here.
-- **Decontaminated against `LegalBenchPT` and `pt_exams`** (2026-07-14,
-  13-word shingle overlap check, 9,614 rows checked): 53 + 2 rows flagged
-  respectively, all manually verified as benign shared real-document text
-  (statutes and one shared government policy title), not leaked test
-  items. No fictional exam content from either benchmark appears anywhere
-  in this dataset. Full reports: `eval/results/DECONTAMINATION-legalbenchpt.md`
-  and `eval/results/DECONTAMINATION-pt_exams.md` in
-  [teex-pt/pt-amalia](https://github.com/teex-pt/pt-amalia). `alba` and
-  `cultura_viva` not yet checked.
+- **Decontaminated against all four consortium benchmarks** (2026-07-14,
+  13-word shingle overlap check, 9,614 rows checked): `LegalBenchPT` and
+  `pt_exams` flagged 53 + 2 rows respectively, all manually verified as
+  benign shared real-document text (statutes and one shared government
+  policy title), not leaked test items — no fictional exam content from
+  either appears anywhere in this dataset. `alba` (linguistics MCQs) and
+  `cultura_viva` (culture/trivia MCQs) came back fully clean, zero
+  overlap. Full reports: `eval/results/DECONTAMINATION-{legalbenchpt,pt_exams,alba-culturaviva}.md`
+  in [teex-pt/pt-amalia](https://github.com/teex-pt/pt-amalia).
 
 ## License & attribution
 

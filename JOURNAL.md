@@ -886,3 +886,20 @@ linked artifacts; this is the narrative thread.
   PT statutory law); a weaker interim rerank-boost mitigation; and a
   ready-made regression test (the three probe queries + expected result)
   to verify any fix. Full diagnosis: `eval/results/RAG-INTEGRATION-TEST.md`.
+
+## 2026-07-14 (cont.) — Decontamination complete: alba + cultura_viva clean, closes the standing rule
+
+- Closed out the remaining two of the four consortium benchmarks
+  (`datagen/decontaminate_alba_culturaviva.py`, same 13-word shingle
+  method as `LegalBenchPT`/`pt_exams`): `alba` (240 Portuguese
+  linguistics MCQs) and `cultura_viva` (1,000 Portuguese culture/trivia
+  MCQs) both came back with zero overlap against `amalia-cita-legal`/
+  `amalia-sum-dre`. Lower priority going in on the theory that
+  linguistics puzzles and culture trivia have even less topical overlap
+  with a legal-citation corpus than `pt_exams` already showed - played
+  out that way, confirmed rather than assumed. Unlike the other two
+  checks, nothing to manually verify (zero flagged rows on both).
+- **All four consortium benchmarks now checked, all clean.** This was
+  the one item explicitly requested and not yet done from the earlier
+  "what's next" rundown - closed out today, not carried forward.
+  Full report: `eval/results/DECONTAMINATION-alba-culturaviva.md`.

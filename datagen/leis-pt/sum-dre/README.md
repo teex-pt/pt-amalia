@@ -74,14 +74,13 @@ the task PLANO.md's leis-pt spec names first (`amalia-sum-dre`) as
 - The official `sumário` is itself sometimes terse (a single sentence) —
   this trains extractive/compressive summarization in the DR abstract's own
   house style, not a general-purpose summarizer.
-- **Decontaminated against `LegalBenchPT` and `pt_exams`** (2026-07-14,
-  13-word shingle overlap check): flagged rows all manually verified as
-  benign shared real-document text (statutes, and one shared government
-  policy title), not leaked test items — full reports:
-  `eval/results/DECONTAMINATION-legalbenchpt.md` and
-  `eval/results/DECONTAMINATION-pt_exams.md` in
-  [teex-pt/pt-amalia](https://github.com/teex-pt/pt-amalia). `alba` and
-  `cultura_viva` (the other two consortium benchmarks) not yet checked.
+- **Decontaminated against all four consortium benchmarks** (2026-07-14,
+  13-word shingle overlap check): `LegalBenchPT` and `pt_exams` flagged
+  rows all manually verified as benign shared real-document text
+  (statutes, and one shared government policy title), not leaked test
+  items; `alba` and `cultura_viva` came back fully clean, zero overlap.
+  Full reports: `eval/results/DECONTAMINATION-{legalbenchpt,pt_exams,alba-culturaviva}.md`
+  in [teex-pt/pt-amalia](https://github.com/teex-pt/pt-amalia).
 
 ## License & attribution
 

@@ -1,0 +1,8 @@
+{
+  "n_bench_items": 1000,
+  "n_our_rows_checked": 9614,
+  "shingle_size": 13,
+  "n_contaminated_rows": 0,
+  "max_shingles_matched_single_row": 0,
+  "hits": []
+}
