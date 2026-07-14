@@ -13,9 +13,9 @@
       "rate": 0.8
     },
     "honesty": {
-      "passed": 68,
+      "passed": 95,
       "total": 100,
-      "rate": 0.68
+      "rate": 0.95
     },
     "variety": {
       "passed": 26,
@@ -23,5 +23,5 @@
       "rate": 0.867
     }
   },
-  "overall": 0.677
+  "overall": 0.781
 }

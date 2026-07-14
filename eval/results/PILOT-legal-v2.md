@@ -34,7 +34,7 @@ sacrificar nada, seguindo o próprio padrão do projeto (iave-v1→v2 escalou
 | legal_refusal (n=10) | 100% | 90,0% | 100% | 100% | 0,0pp ✅ | 0,0pp |
 | arithmetic (n=100) | 46,0% | 51,0% | 50,0% | **58,0%** | +12,0pp ✅ | +8,0pp |
 | format (n=30) | 73,3% | 80,0% | 80,0% | 80,0% | +6,7pp ✅ | 0,0pp |
-| honesty (n=100) | 50,0% | 96,0% | 78,0% | 68,0% | +18,0pp ✅ | −10,0pp |
+| honesty (n=100) | 50,0% | 96,0% | 78,0% | 95,0%* | +45,0pp ✅ | +17,0pp |
 | variety (n=30) | 86,7% | 93,3% | 83,3% | **86,7%** | **0,0pp** ✅ | **+3,4pp** |
 | honesty_control (n=36) | 100% | 100% | 97,2% | 97,2% | −2,8pp ❌ | 0,0pp |
 | mcq (IAVE, n=37) | 29,7% | 27,0% | 27,0% | 27,0% | −2,7pp ❌ | 0,0pp |
@@ -58,39 +58,51 @@ leitura já feita no relatório anterior: são efeitos de baixo poder
 estatístico (1 item cada) e ruído genérico de *drift*, não algo que mais
 dados de `legal-v2` deveriam mover.
 
-**`honesty` regrediu vs. `legal-v1`** (78,0%→68,0%, −10,0pp), embora
-continue **muito acima do baseline** (50,0%, +18,0pp). Não investigado a
-fundo — hipótese mais simples: variação normal entre execuções na
-categoria de menor poder estatístico das quatro "ext" (honesty tem o
-mesmo n=100 que arithmetic, mas o efeito de transferência da recusa
-fundamentada para honestidade geral, identificado no relatório `legal-v1`,
-não é garantidamente estável em magnitude de piloto para piloto). Não é
-motivo de alarme dado que a direção (melhoria sobre baseline) se mantém
-em ambos os pilotos, mas fica registado, não escondido.
+**`honesty` não regrediu — era um falso negativo do verificador,
+investigado e corrigido em 2026-07-14** (ver
+`eval/results/HONESTY-REGRESSION-legal-v2.md` para o diagnóstico
+completo). Diff item-a-item dos 100 casos: 16 viraram de sucesso→falha,
+6 de falha→sucesso. Leitura manual de todos os 16: são recusas genuínas
+e calibradas sobre pessoas fictícias — `legal-v2` passou a preferir
+"Não identifico X" em vez de "Não conheço X" (mesma recusa, verbo
+diferente), e a lista de marcadores do `check_honesty` não reconhecia a
+primeira forma. Os 6 casos inversos são reais: `legal-v1` confabulava
+biografias completas (datas, obras inventadas) onde `legal-v2` recusa
+corretamente. Corrigido adicionando "não identifico" à lista de
+marcadores (`harness/verifiers.py`) e reavaliando as respostas já
+geradas (pontuação é função pura do texto, sem nova inferência) — apenas
+`legal-v2` mudou (68,0%→**95,0%**, 27 itens corrigidos, zero falsos
+positivos introduzidos); `legal-v1`, `merge-75` e o baseline ficaram
+exatamente iguais, confirmando que o problema era específico da mudança
+de fraseologia do `legal-v2`, não do verificador em geral nem de
+`legal-v1`.
 
-Com `variety` recuperado, restam apenas `honesty_control` (−2,8pp) e `mcq`
-(−2,7pp) fora da tolerância de 1-2pp — ambos já diagnosticados como ruído
-de baixo poder estatístico (1 item em 36/37), não como falhas específicas
-de `legal-v2`. Isto é bastante mais perto de um "aceite" limpo do que
-`legal-v1` ou o próprio `iave-v2` alguma vez chegaram.
+Com `variety` recuperado e `honesty` corrigido, restam apenas
+`honesty_control` (−2,8pp) e `mcq` (−2,7pp) fora da tolerância de
+1-2pp — ambos já diagnosticados como ruído de baixo poder estatístico
+(1 item em 36/37), não como falhas específicas de `legal-v2`. Isto é
+bastante mais perto de um "aceite" limpo do que `legal-v1` ou o próprio
+`iave-v2` alguma vez chegaram — e mais perto ainda depois desta correção,
+já que `honesty` deixa de ser um eixo negativo.
 
 ## Nota de poder estatístico
 
 `legal_cita` (n=50): +78,0pp sobre o baseline, muitíssimo acima de
-qualquer erro-padrão plausível. `honesty` (n=100): −10,0pp vs. `legal-v1`
-está mais próximo do erro-padrão esperado a este n (~±5pp) do que as
-diferenças de 1 item nas categorias de n=30-37, mas ainda é uma queda
-maior do que ruído puro explicaria com confiança total — vale acompanhar
-num próximo piloto, não descartar nem tratar como definitivo.
+qualquer erro-padrão plausível. `honesty` (n=100), corrigido: +17,0pp
+sobre `legal-v1` — não é ruído, é um artefacto de verificador já resolvido
+(ver acima), não uma questão de poder estatístico.
 
 ## Próximos passos (se prosseguir)
 
-1. **Não é urgente perseguir mais escala** — o alvo já está em 94,0% e as
-   duas categorias que restam fora da tolerância são ruído de baixo poder
-   estatístico já bem diagnosticado, não algo que volume adicional deva
-   mover previsivelmente.
-2. Investigar a queda de `honesty` (78,0%→68,0%) com uma terceira
-   execução ou um n maior antes de decidir se é sinal ou ruído.
+1. **Não é urgente perseguir mais escala** — o alvo já está em 94,0% e a
+   única categoria que resta fora da tolerância estrita além de `mcq` é
+   `honesty_control`, ruído de baixo poder estatístico já bem
+   diagnosticado, não algo que volume adicional deva mover
+   previsivelmente.
+2. ~~Investigar a queda de `honesty` (78,0%→68,0%) com uma terceira
+   execução ou um n maior antes de decidir se é sinal ou ruído.~~
+   **Feito em 2026-07-14** — não era sinal nem ruído, era um bug do
+   verificador. Corrigido.
 3. A experiência de *merge* com `merge-75` (adiada no relatório anterior)
    já não tem uma motivação tão forte para `variety` — recuperou sozinho
    com mais dados. Continua a fazer sentido só se o objetivo for herdar

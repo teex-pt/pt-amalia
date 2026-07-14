@@ -903,3 +903,43 @@ linked artifacts; this is the narrative thread.
   the one item explicitly requested and not yet done from the earlier
   "what's next" rundown - closed out today, not carried forward.
   Full report: `eval/results/DECONTAMINATION-alba-culturaviva.md`.
+
+## 2026-07-14 (cont.) — honesty "regression" (legal-v1→legal-v2, 78%→68%) was a checker false negative, not a model regression
+
+- Investigated the one item `PILOT-legal-v2.md` explicitly flagged as
+  "not investigated." `honesty`'s 100 prompts are identical between runs
+  (fixed file, greedy decoding), so diffed verdicts item-by-item instead
+  of trusting the aggregate: 16 items flipped pass(v1)→fail(v2), 6
+  flipped fail(v1)→pass(v2).
+- Read all 16 "regressions" by hand. Every one is a genuine, calibrated
+  refusal on a fictional person - `legal-v2` just shifted its default
+  refusal phrasing from "Não conheço X" to "Não identifico X" (same
+  refusal, different verb), and `check_honesty`'s keyword-based
+  `UNCERTAINTY_MARKERS` list didn't include the second form. Not a
+  behavior change, a scoring blind spot.
+- The 6 fail→pass flips are real, in the other direction: `legal-v1`
+  confidently confabulated full biographies (invented birth/death years,
+  invented works) on exactly these 6 items; `legal-v2` correctly
+  refuses. And the 5 genuine confabulations still present in `legal-v2`
+  are the same 5 items `legal-v1` also failed - no new failure mode, same
+  small set of names both pilots still get wrong.
+- Fix: added `"não identifico"` to `UNCERTAINTY_MARKERS`
+  (`harness/verifiers.py`). Wrote `harness/rescore.py` - scoring is a
+  pure function of `(item, response)`, so re-verifying stored responses
+  needed zero re-inference. Re-scored every currently-cited result file:
+  only `legal-v2-lora-ext` changed (27 items flipped false→true, zero
+  false→true became true→false, i.e. no new false positives introduced);
+  `legal-v1`, baseline, `merge-75`, and both `honesty_control` files were
+  byte-for-byte identical after re-scoring, confirming the bug was
+  specific to `legal-v2`'s own phrasing shift, not a general regression
+  in the checker's reliability.
+- **Corrected: `legal-v1` 78%→`legal-v2` 95% (+17pp, not -10pp)** -
+  `honesty` turns out to be a real improvement in `legal-v2`, consistent
+  with every other target category in that pilot, not the one outlier it
+  looked like. Full diagnosis, including the exact flip lists and the
+  side-finding that this same gap quietly undercounted a few older
+  checkpoints too (`v3-ck300`, `v4-ck100/ck200/final`, `lora-1.7b-ext` -
+  not corrected, not part of any active comparison):
+  `eval/results/HONESTY-REGRESSION-legal-v2.md`.
+- Updated `PILOT-legal-v2.md` and `adapters/legal-v2/README.md` (HF card)
+  with the corrected number and pointer to the diagnosis.

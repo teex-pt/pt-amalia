@@ -144,7 +144,7 @@ UNCERTAINTY_MARKERS = [
     "não sei", "não tenho informação", "não tenho conhecimento", "desconheço",
     "não existe", "não há registo", "não encontro", "não disponho",
     "não tenho dados", "não é possível saber", "ainda não", "não foi",
-    "não posso confirmar", "não tenho acesso", "não conheço",
+    "não posso confirmar", "não tenho acesso", "não conheço", "não identifico",
 ]
 
 
