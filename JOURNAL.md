@@ -943,3 +943,55 @@ linked artifacts; this is the narrative thread.
   `eval/results/HONESTY-REGRESSION-legal-v2.md`.
 - Updated `PILOT-legal-v2.md` and `adapters/legal-v2/README.md` (HF card)
   with the corrected number and pointer to the diagnosis.
+
+## 2026-07-14 (cont.) — retrieval-chunking fix verified live, RAG test scaled
+
+- The retrieval-chunking fix handed off in `RAG-INTEGRATION-TEST.md`
+  (chunk-dilution on long enumerated-list articles, CT Art. 351.º not
+  retrieved) is deployed on `api.lexbase.pt` - confirmed directly against
+  the live endpoint. Re-ran the three original probe queries: the
+  near-verbatim quote now puts Art. 351.º at rank #1 (`in_force_only=
+  true`) where it wasn't in the top 6 before. Literal-phrasing and
+  natural-phrasing paraphrases of the same underlying question are
+  **still** not fixed - the deployed change targeted decisive
+  single-retriever matches getting evicted by weak consensus (guaranteed
+  per-retriever candidate-pool slots + a query-focused cross-encoder
+  passage window, not literal alínea-level sub-chunking), which is a
+  narrower slice of the root cause than Q1's original phrasing sits in.
+  Re-ran Q1 unchanged and got the same citation set and hedged answer as
+  the original test - not a regression, just confirms the fix's actual
+  scope.
+- **Bonus fix bundled in the same deploy, bigger than the chunking issue**:
+  `vigente` (in-force) status only ever checked suspension, never repeal
+  - 86,903/86,905 indexed fragments were flagged "in force," including
+  the entire repealed pre-2009 Código do Trabalho, which then outranked
+  the current Code in results. Confirmed fixed live (old CT's equivalent
+  article now returns `vigente: false` with a repeal citation, excluded
+  by the API's default filter).
+- Scaled the off-topic query set 1→5 (medical, entertainment trivia,
+  foreign-country economic law, foreign-country geography, plus the
+  original recipe question) - all 5 correctly return `total: 0` live,
+  confirming the new abstention gate (a calibrated cross-encoder
+  threshold, replacing a fusion score documented as anti-correlated with
+  relevance) generalizes past the one query originally tested.
+- **Found a real false-abstention**, only catchable because it was one of
+  the original 10 queries with a known-good prior result: "Quanto tempo
+  tenho para devolver um produto comprado online?" used to return 6 hits
+  (correct article ranked #1); now returns zero. Root-caused directly
+  against the retriever - the correct article is still found and still
+  ranks #1 among candidates, but its cross-encoder logit (-1.84) falls
+  under the -1.0 abstention threshold. A calibration gap for this
+  question's indirect phrasing style, not a retrieval miss.
+- **Found a new failure mode, present in both baseline and legal-v2, not
+  caused by the retrieval fix**: asked about Brazilian labor law,
+  retrieval (correctly, the corpus is Portuguese-law-only) has nothing
+  Brazilian to offer but surfaces topically-matching Portuguese Código do
+  Trabalho articles instead of abstaining - and neither model notices the
+  jurisdiction mismatch, answering "a lei brasileira... [cites Portugal's
+  CT]" as if the two were the same. No jurisdiction signal exists
+  anywhere in the pipeline to catch this.
+- Updated `RAG-INTEGRATION-TEST.md` (full findings, updated retrieval-team
+  feedback reflecting what shipped vs. what's still open) and
+  `harness/rag_test_queries_v2.jsonl` (15 queries: original 10 + 5 new
+  off-topic domains). New result files:
+  `harness/rag-results-rag-{baseline,legal-v2}-v2-scale.jsonl`.

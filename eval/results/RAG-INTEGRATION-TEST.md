@@ -193,17 +193,94 @@ worth detailing:
 
 ## Known gaps in this test
 
-- The empty-retrieval refusal path (`total=0`) was never exercised —
-  every query in this set returned hits, including the off-topic one.
-- Only tested one off-topic query — worth a small set of them (different
-  domains: medical, general trivia, other-country law) to see if the
-  refusal-generalization finding holds broadly or was this one lucky
-  case.
+- ~~The empty-retrieval refusal path (`total=0`) was never exercised —
+  every query in this set returned hits, including the off-topic one.~~
+  **Closed below — retrieval team shipped a fix that makes this
+  reachable, verified in production.**
+- ~~Only tested one off-topic query — worth a small set of them (different
+  domains: medical, general trivia, other-country law).~~ **Closed below.**
 - The Q1 retrieval gap is itself worth a follow-up: is `search_legislation`
   systematically weaker on "can I be fired for X" phrasing than on
   "justa causa"-style legal terminology? One example isn't enough to
   conclude a pattern. **Update: root-caused, see below — it's not a
-  phrasing/vocabulary gap.**
+  phrasing/vocabulary gap.** **Further update: the shipped fix does NOT
+  close this specific case — see below, it targets a different part of
+  the same root cause.**
+
+## Update: retrieval fix verified live in production, scaled off-topic test (2026-07-14)
+
+The retrieval team's fix for the chunk-dilution root cause (previous
+section) is deployed on `api.lexbase.pt` — confirmed directly against the
+live MCP endpoint, not assumed from a changelog. Re-ran the three
+reproducible probe queries from the root-cause diagnosis:
+
+| Probe query | Before | After (live) |
+|---|---|---|
+| Near-verbatim quote of CT Art. 351.º alínea g | Not in top 6 | **Rank #1** (`in_force_only=True`) |
+| Literal statutory phrasing ("faltas não justificadas ao trabalho") | Not in top 6 | Still not in top 6 |
+| Natural phrasing ("faltar ao trabalho sem justificação") | Not in top 6 | Still not in top 6 |
+
+**The fix resolves the exact regression case it targeted (verbatim/
+strong-signal queries), not the softer paraphrases of the same
+question.** The original Q1 finding — retrieval misses Art. 351.º, so a
+strictly-grounded model answers from incomplete context — **still stands
+for natural phrasing**, confirmed by re-running Q1 unchanged: same
+citation set as the original test, same hedged "não, a menos que..."
+answer. Not a failure of the fix; it targeted a different, narrower slice
+of the same underlying problem than Q1's phrasing sits in.
+
+**Bonus, unplanned fix bundled in the same deploy:** a separate, larger
+bug where `vigente` (in-force) status only checked suspension, not
+repeal — 86,903/86,905 indexed fragments were flagged "in force,"
+including the entire repealed pre-2009 Código do Trabalho, which then
+outranked the current Code in results. Confirmed fixed live: the old
+Código do Trabalho's equivalent article now returns `vigente: false` with
+a repeal citation, and is excluded by the API's default
+`in_force_only=true` filter.
+
+**Scaled the off-topic set from 1 query to 5, spanning domains the
+original test never touched** (medical dosage, entertainment trivia,
+foreign-country economic law, foreign-country geography, in addition to
+the original recipe question) — all 5 correctly return `total: 0` live,
+same as the original pastel-de-nata case. The abstention gate the fix
+introduces (a cross-encoder confidence threshold, replacing a
+fusion-score that was documented as anti-correlated with relevance)
+generalizes beyond the one query originally tested.
+
+**But the same gate produces a genuine false-abstention on an in-corpus,
+answerable question**, caught only because it was one of the original
+10 queries and therefore had a known-good prior result to regress
+against: "Quanto tempo tenho para devolver um produto comprado online?"
+used to return 6 hits (the correct EU consumer-rights transposition
+article ranked #1); now returns `total: 0`. Root-caused directly against
+the retriever: the correct article is still found and still ranks #1
+among candidates, but its cross-encoder logit (−1.84) falls just under
+the −1.0 abstention threshold — a calibration gap for this question's
+phrasing style ("devolver um produto" vs. the article's own vocabulary,
+"livre resolução do contrato"), not a retrieval miss. **Worth flagging
+back to the retrieval team**: the threshold's own calibration note
+already warns keyword-style queries score far lower than question-style
+ones and required deliberately mixing both into the calibration set —
+this looks like a third style (indirect/paraphrastic natural questions)
+that the current calibration set may not cover, and one held-out example
+isn't enough to say how often this recurs in real traffic.
+
+**New failure mode found, present in both models, not caused by the
+retrieval fix:** asked about *Brazilian* labor law ("O que diz a lei
+brasileira sobre férias de trabalhador?"), retrieval correctly has
+nothing Brazilian to offer (the corpus is Portuguese-law-only) but
+surfaces topically-matching Portuguese Código do Trabalho articles
+instead of abstaining — and **both baseline and legal-v2 answer as if
+those provisions were Brazilian law**, without noticing the jurisdiction
+mismatch ("A lei brasileira sobre férias de trabalhador, prevista no
+Código do Trabalho..." — that Código do Trabalho is Portugal's). This is
+a real correctness failure, distinct from the off-topic case: the topic
+matches, so nothing signals "wrong corpus" to either the retriever (no
+jurisdiction field to gate on) or the model (never trained to check
+whether a cited code's own jurisdiction matches the question's). Not
+tested in the original 10 queries; worth a small follow-up set (other
+Lusophone countries — Angola, Cabo Verde, Brazil again with different
+phrasing) to see how often this recurs before treating it as a one-off.
 
 ## Root cause of the Q1 retrieval gap: chunk-level dilution, not vocabulary
 
@@ -240,29 +317,58 @@ quality problem — and very likely not unique to this one article, since
 in Portuguese statutory law (termination grounds, aggravating/mitigating
 circumstances, exemptions, etc.).
 
-**Feedback for the retrieval team, in priority order:**
+**Feedback for the retrieval team, in priority order (status as of the
+2026-07-14 production check, see update above):**
 
-1. **Sub-chunk long enumerated-list articles at the alínea level.** Index
-   each lettered clause as its own retrievable/scoreable unit, while
-   still returning the parent article's full text and citation for
-   actual grounding (don't lose legal context, just add a finer-grained
-   matching unit). Highest-leverage fix — addresses the root cause
-   directly.
-2. **Don't treat this as a one-off patch.** Scan for other long,
-   single-fragment articles with many lettered sub-items (grounds/
-   types/exemptions patterns) — Art. 351.º is very unlikely to be the
-   only instance of this shape in the corpus.
-3. **Cheaper interim mitigation, lower confidence:** rerank boosting for
-   candidates whose `epígrafe` matches a "definition/grounds" pattern
-   ("Noção de", "Fundamentos de", "Constituem justa causa") when query
-   intent looks like "can X happen because of Y" — a band-aid on top of
-   the ranking, not a fix to the underlying chunk granularity.
-4. **Reproducible test case to hand off directly**, no need to
-   re-derive it: the three probe queries above (`harness/lexbase_client.py
-   --query "..."`) and their score breakdowns are a ready-made
-   regression test — rerun them after any chunking change and confirm
-   Art. 351.º (`diploma_id=34546475`, `article=351`) appears in the
-   top-k for at least the literal and verbatim-quote queries.
+1. ~~Sub-chunk long enumerated-list articles at the alínea level.~~ **Not
+   what shipped, and that's fine — the deployed fix took a different,
+   arguably better route to the same root cause: guaranteed
+   per-retriever candidate-pool slots (so a decisive single-retriever
+   match can no longer be evicted before the cross-encoder judges it)
+   plus a query-focused passage window for the cross-encoder (so a long
+   article's relevant alínea isn't truncated away). No re-chunking of
+   the corpus needed. **Verified fixed for verbatim/strong-signal
+   queries; natural-phrasing paraphrases of the same question (Q1-style)
+   are still not fixed by this** — worth deciding whether that residual
+   gap needs its own follow-up or is an acceptable remaining edge.
+2. **Scan for other long, single-fragment articles with many lettered
+   sub-items — still open**, the shipped fix reduces the blast radius
+   (any retriever's strong signal now reaches the judge) but doesn't
+   verify every such article individually the way sub-chunking would
+   have guaranteed by construction.
+3. ~~Cheaper interim mitigation: rerank boosting for
+   "definition/grounds"-pattern epígrafes.~~ **Superseded** — the
+   shipped fix's guaranteed-pool + focused-window approach addresses the
+   same gap more directly than a ranking band-aid would have.
+4. **New, from the production check**: the abstention threshold has at
+   least one confirmed false-abstention on an in-corpus answerable
+   question (see update above, "Quanto tempo tenho para devolver um
+   produto comprado online?") — a calibration gap for indirect/
+   paraphrastic natural-question phrasing, not a retrieval miss (the
+   correct article is still found and ranked #1, just under the cutoff
+   logit). The calibration note already flags that keyword-style and
+   question-style queries score very differently and both had to be
+   included deliberately — this looks like a third style the current
+   calibration set may be missing. Worth scoring real query-log traffic
+   against the threshold before trusting the 0-false-abstention
+   calibration number for phrasing this indirect.
+5. **New, from the production check**: no jurisdiction signal —
+   `search_legislation` returns Portuguese law for jurisdiction-mismatched
+   queries (e.g. "a lei brasileira sobre X") whenever the topic matches,
+   with nothing to indicate the corpus has no Brazilian content at all.
+   Neither model catches this itself (see update above). Not a
+   regression from anything tested before; a newly-found gap, likely
+   worth a metadata-level fix (flag/abstain when a query names a
+   non-Portuguese jurisdiction) rather than a model-training fix, since
+   the retrieval layer is the one place that actually knows the corpus's
+   coverage.
+6. **Reproducible test cases to hand off directly**, no need to
+   re-derive them: the three original probe queries
+   (`harness/lexbase_client.py --query "..."`) for the chunk-dilution
+   regression test (now passing for the verbatim-quote query only), plus
+   the "devolver um produto" false-abstention query and the "lei
+   brasileira" jurisdiction query as two new named regression cases to
+   track going forward.
 
 ## Files
 
