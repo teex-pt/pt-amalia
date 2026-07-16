@@ -995,3 +995,38 @@ linked artifacts; this is the narrative thread.
   `harness/rag_test_queries_v2.jsonl` (15 queries: original 10 + 5 new
   off-topic domains). New result files:
   `harness/rag-results-rag-{baseline,legal-v2}-v2-scale.jsonl`.
+
+## 2026-07-16 — both open retrieval findings fixed in lexbase-be (pending deploy)
+
+- Closed the two findings the scaled RAG test left open, working directly
+  in `teex-pt/lexbase-be` (commit `c3bb211`) rather than handing off:
+- **False-abstention** ("devolver um produto comprado online" refused
+  despite the correct article at rank #1): a calibration-set gap, not a
+  retrieval bug. Indirect consumer phrasing is a query *style* that
+  scores whole logits below question-style gold even when the answer is
+  right there. Re-fitted the abstention threshold on a new 84-query,
+  5-style calibration set - now a rerunnable script plus a tracked query
+  file in that repo, so the next unseen style is a re-fit, not
+  archaeology. The re-fit also caught that the original fit had silently
+  measured fp32 instead of the deployed int8 config on macOS (torch never
+  auto-picks a quantization engine on Apple silicon and the failure was
+  swallowed by a fallback) - fixed too. One of my own calibration
+  queries turned out to be mislabeled in an instructive way: the
+  traffic-fine question *looks* answerable but the Código da Estrada
+  isn't in the corpus at all - kept as an adversarial refusal probe,
+  it's the hardest refusal shape and it bounds the threshold from below.
+- **Jurisdiction conflation** ("lei brasileira" answered with Portugal's
+  CT): measured as unfixable at the ranking layer - the Portuguese
+  article on the same topic genuinely IS the most relevant candidate
+  ("impostos em Espanha" scored above any viable threshold). Fixed as a
+  coverage check in the service layer instead: explicit foreign-law
+  phrasing and foreign-situation locations refuse before retrieval with
+  an explanatory note; any Portugal anchor suppresses the gate, so
+  cross-border Portuguese-law questions ("contratar um trabalhador
+  brasileiro em Portugal") still return results - verified with 33
+  fire/no-fire cases plus the full RAG query set end-to-end.
+- **Not yet live**: api.lexbase.pt runs the old code until the box pulls
+  and restarts. After deploy, re-verify against the live endpoint (the
+  threshold transfers across CPU kernel families; it survived that once
+  before, but confirm, don't assume). Full detail:
+  `eval/results/RAG-INTEGRATION-TEST.md`, final update section.

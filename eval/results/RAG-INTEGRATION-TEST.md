@@ -370,8 +370,49 @@ circumstances, exemptions, etc.).
    brasileira" jurisdiction query as two new named regression cases to
    track going forward.
 
+## Update: both open findings fixed in the retrieval codebase (2026-07-14, pending deploy)
+
+The two findings above (feedback items 4 and 5) are now fixed in
+`teex-pt/lexbase-be` (commit `c3bb211`), verified end-to-end against the
+local retriever on the production scoring configuration — **not yet live
+on `api.lexbase.pt` until the box deploys it**:
+
+- **False-abstention**: root cause was a calibration-set gap — indirect
+  consumer phrasing is a query *style*, and it scores whole logits below
+  the question-style gold queries the original threshold was fitted on,
+  even when the correct article ranks #1. The threshold was re-fitted on
+  a new 84-query, 5-style calibration set (now a rerunnable script + a
+  tracked query file, so the next new style is a re-fit, not
+  archaeology). The re-fit also surfaced that the original fit had
+  silently measured the wrong numeric configuration on macOS (a
+  quantization-engine selection bug, also fixed). After the re-fit, the
+  "devolver um produto" query returns the correct consumer-rights
+  article, all off-topic probes still refuse — including a new
+  adversarial probe that *looks* answerable but isn't (a traffic-fine
+  question whose statute isn't in the corpus), which now bounds the
+  threshold from below.
+- **Jurisdiction conflation**: unfixable at the ranking layer (the
+  Portuguese article on the same topic *genuinely is* the most
+  topically-relevant candidate — "impostos em Espanha" scored above any
+  viable threshold), so it's now a coverage check in the service layer,
+  which is the one place that knows what the corpus contains. Explicit
+  foreign-law phrasing ("lei brasileira", "código civil espanhol") and
+  foreign-situation locations ("férias em Angola") refuse before
+  retrieval with an explanatory `note` the calling model can relay;
+  queries with any Portugal anchor sail through, so "posso contratar um
+  trabalhador brasileiro em Portugal?" still returns Portuguese law
+  (top hit: CT art. 8.º, destacamento — correct). 33 fire/no-fire cases
+  plus this report's full query set verified end-to-end.
+
+Re-verify both against the live endpoint after the next deploy — the
+threshold is fitted on a different CPU kernel family than production
+runs, and the original fit survived that transfer once but it should be
+confirmed, not assumed.
+
 ## Files
 
 `harness/lexbase_client.py`, `harness/rag_integration_test.py`,
 `harness/rag_integration_test_anthropic.py`, `harness/rag_test_queries.jsonl`,
-`harness/rag-results-rag-{baseline,legal-v2,legal-v2-prod,ministral,mistral-small,sonnet5}.jsonl`.
+`harness/rag_test_queries_v2.jsonl`,
+`harness/rag-results-rag-{baseline,legal-v2,legal-v2-prod,ministral,mistral-small,sonnet5}.jsonl`,
+`harness/rag-results-rag-{baseline,legal-v2}-v2-scale.jsonl`.
